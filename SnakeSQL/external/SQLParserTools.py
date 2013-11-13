@@ -89,7 +89,7 @@ class Parser:
     def parse(self, sql):
         "Parse an SQL statement"
         stripped = stripBoth(sql.split(' '))
-        function = stripped[0].lower()
+        function = str(stripped[0]).lower()
         if function == 'select':
             result = self.parseSelect(sql)
         elif function == 'delete':
@@ -103,7 +103,7 @@ class Parser:
         elif function == 'drop':
             result = self.parseDrop(sql)
         elif function == 'show':
-            if stripped[1].lower() == 'tables':
+            if str(stripped[1]).lower() == 'tables':
                 result = {'item':'tables',}
             else:
                 raise SQLSyntaxError("Expected 'TABLES' after SHOW.")
@@ -117,12 +117,12 @@ class Parser:
         keyword = 'DROP'
         tableIdentifier = 'TABLE'
         table = ''
-        sql = stripBoth(sql)
-        if sql[:len(keyword)+1].lower() <> keyword.lower()+' ':
+        sql = str(stripBoth(sql))
+        if sql[:len(keyword)+1].lower() <> str(keyword).lower()+' ':
             raise SQLSyntaxError('%s term not found at start of the %s statement.'%(keyword.upper(), keyword.upper()))
         else:
             sql = stripStart(sql[len(keyword)+1:])
-        if sql[:len(tableIdentifier)+1].lower() <> tableIdentifier.lower()+' ':
+        if sql[:len(tableIdentifier)+1].lower() <> str(tableIdentifier).lower()+' ':
             raise SQLSyntaxError('%s term not found after %s keyword.'%(tableIdentifier.upper(), keyword.upper()))
         else:
             sql = stripStart(sql[len(tableIdentifier)+1:])
