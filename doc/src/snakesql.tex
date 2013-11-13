@@ -1,0 +1,1830 @@
+\documentclass{howto}
+\title{SnakeSQL}
+\author{James Gardner}
+\authoraddress{
+	\url{http://www.pythonweb.org/projects/snakesql/}\\
+	\email{docs at pythonweb.org}
+}
+\date{19 December 2004}
+\begin{document}
+\maketitle
+\begin{center}
+\copyright{} 2002-2004 James Gardner All rights reserved.
+\end{center}
+
+
+%\section{\module{SnakeSQL} --- Pure Python SQL database supporting NULLs\label{snakeSQL}}
+%\declaremodule{extension}{SnakeSQL}
+%\modulesynopsis{Pure Python SQL database supporting NULLs.}
+%\moduleauthor{James Gardner}{james@jimmyg.org}
+
+\tableofcontents
+
+\section{Abstract}
+
+\strong{SnakeSQL --- Pure Python SQL database supporting NULLs}
+
+SnakeSQL is a pure Python SQL database written to remove the dependence of the Python Web Modules on 3rd party drivers for non-Python databases like MySQL.
+
+The database supports the simplest possible subset of ANSI SQL 92 including NULLs (something other pure Python databases such as Gadfly do not currently support). 
+
+The database is fully DB-API 2.0 compliant and is written in layers so that it can easily be extended to support different storage mechanisms. Currently implemented are a fast binary DBM driver (default) and a slower CSV file driver (handy for viewing table contents when designing and developing an application or database structure).
+
+\begin{seealso}
+  \seetitle[http://www.python.org/topics/database/]
+    {Python DB-SIG Pages}
+    {To find out more about the DB-API 2.0 or how to program using DB-API 2.0 methods, please visit \url{http://www.python.org/topics/database/}.}
+\end{seealso}
+
+
+
+\section{Installation Options}
+
+Quick answer: \code{python setup.py install}
+
+If you need more information than that, read on...
+
+SnakeSQL doesn't actually need formally installing although it is easiest if you do install it. The only requirement is that either the \module{SnakeSQL} module folder is in a place where Python looks for modules or you explicitly tell Python where it is. It really is very easy but I've tried to explain it in full which is why there are so many options.
+
+\subsection{Install SnakeSQL}
+
+The easiest way to get the \file{SnakeSQL} module directory listed on your \code{PYTHONPATH} environmental variable is to install the software to your Python \file{Lib/site-packages} directory where Python looks for new modules. 
+
+This method will only work if you have appropriate permissions. If you are using SnakeSQL on a hosted server for example, one of the other options might be more suitable. Try this first though.
+
+Windows Users: Double click \file{setup.py} and follow the instructions.
+
+All others: Load up a shell. In the installation directory execute the command below and follow the instructions:
+\begin{verbatim}
+python setup.py install
+\end{verbatim}
+
+\note{Bear in mind that Python on your system may be called \code{python2} or \code{python2.3} so replace \code{python} in the example above with whatever is appropriate for your platform.}
+
+\subsection{Put SnakeSQL in your script directory}
+
+Place the \file{SnakeSQL} directory of the distribution in the same directory as the script which uses the modules. This works because Python always searches the directory containing a script when looking for modules.
+
+\warning{Be careful to use the correct \file{SnakeSQL} directory. The one you need to copy is not the one containing the \file{setup.py} script, it is the \file{SnakeSQL} directory in the \file{SnakeSQL} directory which contains the \file{setup.py} script.}
+
+\subsection{Modify your PYTHONPATH Environmental Variable}
+
+\code{PYTHONPATH} is an environmental variable which contains a list of places Python should look for modules. You can add the full path to the correct \file{SnakeSQL} directory (see warning above) to this environmental variable. For information on how to set environmental variables refer to your operating system's help.
+
+\subsection{Modify sys.path}
+
+The \code{sys.path} variable is a list of places Python looks for modules. You can add the directory to SnakeSQL to your \code{sys.path} variable using code similar to the following in every file using the modules:
+
+\begin{verbatim}
+>>> import sys
+>>> sys.path.insert(0,'C:/path/to/distribution/directory')
+\end{verbatim}
+replacing \file{C:/path/to/distribution/directory} with the path to the directory containing the correct \file{SnakeSQL} directory.
+
+\note{Even on windows you can use the \code{/} character for paths. This saves you having to use escape characters to escape backslashes.}
+
+\subsection{Testing your Installation}
+
+To test your installation load up a command prompt and start Python (Windows XP users can load Python if it is installed by clicking Start->Run and typing \code{python} then pressing enter).
+
+You should see something similar to the following:
+
+\begin{verbatim}
+Python 2.2.3 (#42, May 30 2003, 18:12:08) [MSC 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+\end{verbatim}
+
+Enter the following line of code and press enter:
+
+\begin{verbatim}
+>>> import SnakeSQL
+>>> 
+\end{verbatim}
+
+If you get another empty prompt as shown above then the installation has worked. You may get an error message like the one shown below:
+
+\begin{verbatim}
+>>> import SnakeSQL
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+ImportError: No module named SnakeSQL
+>>>
+\end{verbatim}
+
+If you see an \code{ImportError} it means that Python could not find the SnakeSQL module. You should go over the steps in this section again.
+
+\section{Learning SnakeSQL}
+
+\subsection{Understanding Field Types}
+
+SnakeSQL is a typed database. This means the information you send to the database and the information retrieved from the database will be automatically converted to the correct formats so that you can treat the values as normal Python objects.
+
+SnakeSQL currently supports the following types which are described in the SQL Reference section of this document:
+
+\begin{tableii}{l|l}{code}%
+  {Type}{Description}
+  \lineii{\code{Bool}}    {True or False}
+  \lineii{\code{Integer}} {Any Python integer (not Python Long or Decimal)}
+  \lineii{\code{Long}}    {Any Python long integer}
+  \lineii{\code{Float}}   {Any Python floating point number}
+  \lineii{\code{String}}  {A string of 255 characters or less (XXX Not unicode?)}
+  \lineii{\code{Text}}    {A 24-bit string}
+  %\lineii{\code{Binary}}    {A 24-bit binary string}
+  %\lineii{\code{Pickle}}    {A field which stores any Python object by pickling it}
+  \lineii{\code{Date}}{Any valid Python \code{datetime.date} object. Takes values in the form of python \module{datetime} objects. Only stores days, months and years, any other information is trunkated. Dates from \code{0001-01-01} to \code{9999-12-31}. }
+  \lineii{\code{Time}}{Any valid Python \code{datetime.time} object. Takes values in the form of python \module{datetime} objects. Only stores hours, minutes and seconds, any other information is trunkated.}
+  \lineii{\code{DateTime}}{Any valid Python \code{datetime.datetime} object. Takes values in the form of python \module{datetime} objects. Only stores days, months, years, hours, minutes and seconds, any other information is trunkated.}
+  %\lineii{\code{Unknown}}    {A field type which is not one of the above}
+\end{tableii}
+
+
+The values you pass to the \method{cursor.execute()} method should be of the correct type for the field they are representing. The values returned by the \method{cursor.fetchall()} method will automatically be returned as the appropriate Python type.
+
+For example, \code{Bool} fields should have the Python values \code{True} or \code{False}, \code{Long} fields should be a valid Python \code{long} etc. 
+
+There are some exceptions:
+
+\code{String} fields should contain Python strings of 255 characters of less. \code{Text} fields should contain 24 bit strings less. For strings longer than this length you should consider saving the string in a file and saving the filename in the database instead.
+
+\code{Date}, \code{Datetime} and \code{Time} fields take Python \code{datetime.date}, \code{datetime.datetime} and \code{datetime.time} objects respectively. 
+
+Unfortunately Python 2.2 and below do not support the \module{datetime} module. However SnakeSQL uses a compatibility module that behaves closely enough for most purposes. Simply import SnakeSQL and then you can import the datetime module automatically. This is what it looks like at the Python prompt: 
+
+\begin{verbatim}
+Python 2.2.3 (#42, May 30 2003, 18:12:08) [MSC 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import SnakeSQL
+>>> import datetime
+>>> print datetime.date(2004,11,24)
+2004-11-24
+>>>
+\end{verbatim}
+
+\subsection{Multiple Users and Locks}
+
+As mentioned earlier only one user can be make changes to a database at once (otherwise one user could over-write another user's information without the first user knowing). However, SnakeSQL is designed to work in a multi-threaded web environment when requests to read the database can happen from any process at any time. It is quite likely that more than one process will try to access a single database at once. If this happens, rather than raising an error, SnakeSQL will make any subsequent users wait until the first user finishes. 
+
+In theory, one of the processes accessing the database could get stuck in an infinite loop and not release the lock on the database to allow other users to access it. After a period of 2 seconds, if the process with the current lock on the database doesn't access it, the lock will be released and another process can obtain a lock. The first process will itself have to wait to obtain a lock.
+
+If after 10 seconds a process still hasn't obtained a lock on the database it will forcibly obtain a lock, rolling back the database to the state it was in before the first process started changing it (no data corruption). If the first process (which took far too long to make its changes) tries to access the database again it will not be able to and will raise an Error.
+
+In this way the only time an error is raised when multiple processes try to access the database at once is when a process has waited for 10 seconds to obtain a lock and at least 4 database calls have been made in the time it has waited. This could only happen in the event that an extremely slow database gets a lock and keeps accessing the database to avoid losing its lock (bad programming) or your server is overloaded with too many processes (more than one every two seconds) accessing a database for two seconds or longer. Under this sort of load you would be better using MySQL or a faster server.
+
+
+\section{Using the Interactive Prompt}
+
+The SnakeSQL distribution comes with an Interactive Prompt which allows you to enter SQL queries directly into a database and see the results as a table of data. The \file{snake.py} file is in the \file{scripts} directory of the distribution. 
+
+\subsection{Listing the Options}
+
+To see a list of all the available options for starting an Interactive Prompt session, load a command prompt and type the following at the command line:
+
+\begin{verbatim}
+> python snake.py -h
+\end{verbatim}
+
+This will display all the options available to you for using the interactive prompt. 
+
+%If you have installed the modules the \file{snake.py} should also be in the \file{<python-dir>/Scripts} directory.
+
+\subsection{Creating a Database}
+
+To create and connect to a database named \code{test} type the following at the command line:
+
+\begin{verbatim}
+> python snake.py -c test
+\end{verbatim}
+
+This will run the interactive prompt. The database we are using is called \code{test}. The \code{-c} option means automatically create the database if it doesn't already exist. You should see something similar to this:
+
+\begin{verbatim}
+SnakeSQL Interactive Prompt
+Type SQL or "exit" to quit, "help", "copyright" or "license" for information.
+>>>
+\end{verbatim}
+
+It looks a bit like the Python prompt but this prompt only allows SQL queries.
+
+\subsection{Using the Prompt}
+
+Try selecting some information form the table \code{testTable}:
+
+\begin{verbatim}
+>>> SELECT * FROM testTable
+Error: Table 'testTable' not found.
+>>>
+\end{verbatim}
+
+Unsurprisingly, this gives an error message since we haven't yet created a table. All the supported commands, including creating a table will be demonstrated in the section SQL Reference.
+
+If you are new to SQL you should read the SQL Reference and test the examples using the interactive prompt.
+
+One last thing. To exit the Interactive Prompt type \code{exit} and press Enter:
+\begin{verbatim}
+>>> exit
+
+C:\Documents and Settings\James\Desktop\SnakeSQL\scripts>
+\end{verbatim}
+
+You will be returned to the usual command prompt.
+
+\section{Using SnakeSQL as a DB-API 2.0 Database}
+
+Although the ability to use SnakeSQL from the interactive prompt is extremely useful for debugging or remotely administering databases, SnakeSQL is designed to be used from within Python code.
+
+\subsection{Connecting to a Database and Obtaining a Cursor}
+
+Connecting to a database is really very easy. First import SnakeSQL:
+
+\begin{verbatim}
+import SnakeSQL
+\end{verbatim}
+
+To create a new database named \code{test} you would use the following code:
+
+\begin{verbatim}
+connection = SnakeSQL.connect(database='test', autoCreate=True)
+\end{verbatim}
+
+This creates the directory \file{test} to store the database tables in the directory of the script.
+
+The code below will connect to an existing database named \code{test}:
+
+\begin{verbatim}
+connection = SnakeSQL.connect(database='test')
+\end{verbatim}
+
+If you wanted to store the database as CSV files rather than the faster and better tested binary DBM format you could create a new like this:
+
+\begin{verbatim}
+connection = SnakeSQL.connect(database='test', driver='csv', autoCreate=True)
+\end{verbatim}
+
+\warning{You cannot create a database in one format and expect to be able to connect to it using a driver for a different format. There is currently no way of converting between formats. You can't make two connections to the same database either. Only one connection is allowed at once although SnakeSQL manages things so that if two different programs try to connect to the same database at once the second program will waits for the first to finish.}
+
+Below is a description of the full range of parameters:
+
+\begin{funcdesc}{connect}{\var{database,}\optional{driver='dbm',}\optional{autoCreate=False}}
+\begin{description}
+
+\item[\var{database}]
+The database name to connect to. (Also the name of the directory containing the tables).
+\item[\var{driver}]
+The driver to use to serialise the database information to disk. The default is the fast binary DBM driver. Alternatively you could use the CSV format by specifying \var{driver='csv'}.
+\item[\var{autoCreate}]
+Whether to automatically create a new database if one doesn't already exist. Can be \code{True} or \code{False}. If not specified the default is \code{autoCreate=False}.
+\end{description}
+\end{funcdesc}
+
+\warning{You should not rely on the positions of the parameters in the constructor staying the same in future versions. All parameters should be referenced in the \var{name=value} way.} 
+
+Once you have connected to the database you will need a \code{Cursor} object with which to manipulate the database. We can easily create a cursor by calling the \code{connection}'s \method{cursor()} method.
+
+\begin{verbatim}
+cursor = connection.cursor()
+\end{verbatim}
+
+Cursor stands for a "CURrent Set Of Results". Some databases benefit from separating certain functions into a connection object and a cursor object. SnakeSQL doesn't but does things in this way to be compliant with version 2.0 of the Python DB-API.
+
+The next sections show you how to use the \code{cursor}.
+
+\subsection{Executing SQL}
+
+The \method{execute()} method is used to retrieve information from a database and looks like this:
+
+\begin{verbatim}
+cursor.execute("SELECT * FROM Test")
+\end{verbatim}
+
+or 
+
+\begin{verbatim}
+cursor.execute("INSERT INTO Test (dateColumn, numberColumn) VALUES ('2004-11-8', 4)")
+\end{verbatim}
+
+SnakeSQL uses \code{?} style parameter substitution. This means the \method{execute()} method can take a list of values to substitute for any unquoted \code{?} symbols in the SQL string.
+
+\begin{verbatim}
+values = [datetime.date(2004,11,8), 4]
+cursor.execute("INSERT INTO Test (dateColumn, numberColumn) VALUES (?, ?)", values)
+\end{verbatim}
+
+or 
+
+\begin{verbatim}
+cursor.execute(
+   "UPDATE Test SET dateColumn=?, numberColumn=? WHERE stringColumn=?",
+   [datetime.date(2004,11,8), 4, "where string"]
+)
+\end{verbatim}
+
+At first sight the parameter substitution doesn't seem to offer much of an advantage but in fact it is extremely useful because SnakeSQL will automatically convert the values to SQL for you so that you don't need to convert them yourself. 
+
+\note{Parameter substitution can be done for any value which needs conversion. This includes default values in \code{CREATE} statements and values in \code{INSERT} and \code{UPDATE} statements or \code{WHERE} clauses. Parameter substitutions are \strong{not} available for strings which do not need conversions such as table names, column names etc.}
+
+The module also supports \method{executemany()}. This method does the same as \method{execute()} except it executes once for each sequence in the values parameter. For example:
+
+\begin{verbatim}
+cursor.executemany(
+   "UPDATE Test SET dateColumn=?, numberColumn=? WHERE stringColumn=?",
+    [
+       [datetime.date(2004,11,8), 4, "string1"],
+       [datetime.date(2004,11,8), 5, "string2"],
+       [datetime.date(2004,11,8), 6, "string3"],
+    ]
+)
+\end{verbatim}
+
+In SnakeSQL this is no more efficient than executing a number of normal \method{cursor.execute()} methods.
+
+\note{None of you queries will be saved permanently to the database until you call \code{connection.commit()} to commit your changes. See later.}
+
+\subsection{Retrieving Results}
+
+Once you have executed a SELECT statement you will want to retrieve the results. This is done using the \method{cursor.fetchall()} method:
+
+\begin{verbatim}
+cursor.execute("SELECT * FROM Test")
+results = cursor.fetchall()
+\end{verbatim}
+
+The \code{results} variable will always contain a tuple of tuples of fields. If the query matched no rows, result will be \code{((),)}. If it matched one row it will be in the form \code{((col1, col2, col3, etc),)}. If it matched more than one it will be in the form \code{((col1, col2, col3, etc), (col1, col2, col3, etc), etc )}
+
+You can print the results like this:
+
+\begin{verbatim}
+for row in cursor.fetchall():
+    print "New Row"
+    for field in row:
+        print field
+\end{verbatim}
+
+The \method{cursor.fetchall()} method will return the same results until another SQL query is executed using \method{cursor.execute()}.
+
+\note{The cursor also supports \method{cursor.fetchone()} and \method{cursor.fetchmany(\var{size})} methods but it is currently just as efficient to use \method{cursor.fetchall()}}
+
+
+\subsection{Transactions, Rollbacks and Committing Changes}
+
+SnakeSQL supports basic transactions. This means that you can make a number of changes to the database but if your program crashes your changes will not be saved so that the database is not left in an unstable state where you have updated some tables but not others.
+
+Changes are only saved (or committed) to the database when you call the \code{connection} object's \method{commit()} method:
+
+\begin{verbatim}
+connection.commit()
+\end{verbatim}
+
+If you have made a mistake and want to lose all the changes you have made, you can rollback the database to its previous state using the \code{connection} object's \method{rollback()} method:
+
+\begin{verbatim}
+connection.rollback()
+\end{verbatim}
+
+Finally, if you have finished using a connection you can close it using the \code{connection} object's \method{close()} method. This will also rollback the database to the time you last committed your changes so if you want to save your changes you should call \method{commit()} first.
+
+\begin{verbatim}
+connection.commit()
+connection.close()
+\end{verbatim}
+
+\note{Please note that making these changes to the \code{connection} object will automatically affect all \code{cursor} objects of that connection as well since they all share the same connection object.}
+
+\section{Special Characters}
+
+This section describes how to deal with special characters in Python and SnakeSQL. 
+
+\subsection{In Python}
+
+Within a Python string, certain sequences have special meaning. Each of these sequences begins with a backslash \code{\e}, known as the escape character. The values (and different escape methods) allowed in string literals are described in the Python documentation at \url{http://www.python.org/doc/current/ref/strings.html}. This is a brief summary.
+
+Python recognizes the following escape sequences:
+\begin{verbatim}
+\\  	Backslash (\)  	
+\' 	Single quote (') 	
+\" 	Double quote (") 	
+\a 	ASCII Bell (BEL) 	
+\b 	ASCII Backspace (BS) 	
+\f 	ASCII Formfeed (FF) 	
+\n 	ASCII Linefeed (LF) 	
+\N{name} 	Character named name in the Unicode database (Unicode only) 	
+\r 	ASCII Carriage Return (CR) 	
+\t 	ASCII Horizontal Tab (TAB) 	
+\uxxxx 	Character with 16-bit hex value xxxx (Unicode only)
+\Uxxxxxxxx 	Character with 32-bit hex value xxxxxxxx (Unicode only)
+\v 	ASCII Vertical Tab (VT) 	
+\ooo 	Character with octal value ooo 
+\xhh 	Character with hex value hh 	
+\end{verbatim}
+These sequences are case sensitive. For example, \code{\e b} is interpreted as a backspace, but \code{\e B} is not. 
+
+You can use these characters in SQL exactly the same way as you would in Python. For example \code{'end of one line\e nstart of new line'} is a valid SQL string containing a line break in the middle and could be used like this:
+
+\begin{verbatim}
+cursor.execute("INSERT INTO table (columnOne) VALUES ('end of one line\nstart of new line')")
+\end{verbatim}
+
+There is one important point to note about how Python (and hence SnakeSQL) deals with these escape characters. If a string contains a backslash \code{\e} but the character after the backslash is not a character which can be escaped then the single backslash is treated as a single backslash. If the character can be used in an escape sequence then the backslash is treated as an escape character and the character is escaped.
+
+\note{All examples in this section are from the Python prompt not the SnakeSQL one.}
+
+For example:
+
+\begin{verbatim}
+Python 2.4 (#60, Nov 30 2004, 11:49:19) [MSC v.1310 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> print 'hello\%world'
+hello\%world
+>>> print 'hello\nworld'
+hello
+world
+>>> 
+\end{verbatim}
+
+If a string contains both escaped and non-escaped characters Python guesses which are backslashes and which are escape characters:
+
+\begin{verbatim}
+>>> print 'hello\nworld\%again'
+hello
+world\%again
+>>>
+\end{verbatim}
+
+If a string contains a double backslash \code{\e \e} it is always treated as an escaped backslash character and printed as \code{\e}. 
+
+\begin{verbatim}
+>>> print '\\%'
+\%
+>>> print '\%'
+\%
+\end{verbatim}
+
+This means that the following expression is True:
+
+\begin{verbatim}
+>>> print '\\%' == '\%'
+True
+>>>
+\end{verbatim}
+
+But the following is not:
+
+\begin{verbatim}
+>>> print '\\\\%' == '\\%'
+False
+>>>
+\end{verbatim}
+
+When writing Python strings you have to be very careful how the backslash character is being used and then you will have no problems.
+
+\subsection{Interactive Prompt}
+
+The Interactive Prompt obeys the same special character rules as Python and SQL described above. One point which could cause confusion is the way the Interactive Prompt displays strings. If strings can be easily displayed they are. Otherwise the \code{repr()} function is used on them to explicitly display all their escape characters. This means all genuine backslashes appear double quoted.
+
+\begin{verbatim}
+Python 2.4 (#60, Nov 30 2004, 11:49:19) [MSC v.1310 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> print repr('hello\nworld\%once\\more')
+'hello\nworld\\%once\\more'
+\end{verbatim}
+
+\subsection{In SQL}
+
+In SQL all strings must be properly quoted using single quotes. To insert a string like \code{James} into the database, we use the SQL \code{'James'} but what if we want to insert the string \code{tail's}? Because it has a \code{'} character in it we can't simply do \code{'tail's'} as the SQL parser won't know which \code{'} ends the string. Instead we use \code{'tail''s'}. Double single quotes (\code{''}) in SQL mean a \code{'} character. 
+
+The single quote character \code{'} is the only character which needs special treatment in SQL all the others like \code{\e n} behave exactly as they do in Python as described above. 
+
+For example:
+
+\begin{verbatim}
+cursor.execute("INSERT INTO table (columnOne) VALUES ('James''s')")
+\end{verbatim}
+
+\subsection{The Easy Way}
+
+If you are using the advanced cursor methods like \code{cursor.insert()} or \code{cursor.update()} (described later) or parameter substitution (described earlier), the easiest way to deal with special characters is to do nothing with them at all. The methods will automatically handle the conversions for you.
+
+For example:
+
+\begin{verbatim}
+cursor.insert(
+    table='table',
+    columns=['columnOne'],
+    values=["James's"],
+)
+\end{verbatim}
+
+or 
+
+\begin{verbatim}
+cursor.execute("INSERT INTO table (columnOne) VALUES (?)", "James's")
+\end{verbatim}
+
+If you want explicitly want to use the cursor methods like \code{cursor.insert()} or \code{cursor.update()} but with quoted SQL strings rather than having the conversions done automatically you can do so like this:
+
+\begin{verbatim}
+cursor.insert(
+    table='table',
+    columns=['columnOne'],
+    sqlValues=["'James''s'"],
+)
+\end{verbatim}
+
+\section{SQL Reference}
+
+This section teaches you all the supported SQL commands. There is an excellent SQL tutorial at \url{http://www.w3schools.com/sql} on which the specification for SnakeSQL is based.
+
+\subsection{What is SQL?}
+
+\begin{itemize}
+\item 
+SQL stands for Structured Query Language
+\item 
+SQL allows you to access a database
+\item 
+SQL is an ANSI standard computer language
+\item 
+SQL can execute queries against a database
+\item 
+SQL can retrieve data from a database
+\item 
+SQL can insert new records in a database
+\item 
+SQL can delete records from a database
+\item 
+SQL can update records in a database
+\item 
+SQL is easy to learn
+\end{itemize}
+
+SQL is an ANSI (American National Standards Institute) standard computer language for accessing and manipulating database systems. SQL statements are used to retrieve and update data in a database. 
+
+Unfortunately, there are many different versions of the SQL language, but to be in compliance with the ANSI standard, they must support the same major keywords in a similar manner (such as SELECT, UPDATE, DELETE, INSERT, WHERE, and others). 
+
+\note{Most of the SQL database programs also have their own proprietary extensions in addition to the SQL standard and some of them implement different keywords in different ways. SnakeSQL try's to use the most standard SQL syntax.}
+
+\begin{seealso}
+  \seetitle[http://www.pythonweb.org/projects/webmodules/]
+    {Python Web Modules}
+    {The Python Web Modules come with two database layers which hide the variations between different SQL implementations. The \module{web.database} module provides functions for building SQL statements in the correct way for the underlying database and the \module{web.database.object} module lets you treat an SQL database like a Python dictionary with no need to understand SQL at all.}
+\end{seealso}
+
+\paragraph{Database Tables}
+
+A database most often contains one or more tables. Each table is identified by a name (e.g. \code{Customers} or \code{Orders}). Tables contain records (rows) with data.
+
+Below is an example of a table called \code{Person}:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | John      | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+The table above contains two records (one for each person) and four columns (LastName, FirstName, Address, and DateOfBirth).
+
+\paragraph{Queries}
+
+With SQL, we can query a database and have a result set returned.
+
+A query looks like this:
+
+\begin{verbatim}
+SELECT LastName FROM Person
+\end{verbatim}
+
+Gives a result set like this:
+\begin{verbatim}
++----------+
+| LastName |
++----------+
+| Smith    |
++----------+
+| Doe      |
++----------+
+\end{verbatim}
+
+\note{Some database systems require a semicolon at the end of the SQL statement. SnakeSQL does not.}
+
+\subsection{The SELECT Statement}
+
+The SELECT statement is used to select data from a table. The tabular result is stored in a result table (called the result-set).
+
+\begin{verbatim}
+SELECT column_name(s) FROM table_name
+\end{verbatim}
+
+\paragraph{Select Some Columns}
+
+To select the columns named \code{LastName} and \code{FirstName}, use a SELECT statement like this:
+
+SELECT LastName, FirstName FROM Person
+
+Table Person:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | John      | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+Result Set:
+\begin{verbatim}
++----------+-----------+
+| LastName | FirstName |
++----------+-----------+
+| Smith    | John      |
++----------+-----------+
+| Doe      | John      |
++----------+-----------+
+\end{verbatim}
+
+The order of the columns in the result is the same as the order of the columns in the query.
+
+\paragraph{Select All Columns}
+
+To select all columns from the \code{Person} table, use a \code{*} symbol instead of column names, like this: 
+
+\begin{verbatim}
+SELECT * FROM Person
+\end{verbatim}
+
+Result Set:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | John      | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+\paragraph{Testing the SELECT Statement}
+
+The best way to learn SQL is to experiment. If you haven't done already you should read the section on using the Interactive Prompt. This will enable you to try out all the examples coming up. If you have read that section go ahead and create a database named \code{test}:
+
+\begin{verbatim}
+> python snake.py -c test
+\end{verbatim}
+
+You will also need to have some data to play with so at the prompt type the following information (it is usually easiest to copy and paste).
+
+\code{CREATE TABLE Person (LastName String required, FirstName string, Number Integer, DateOfBirth Date)}
+\code{INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Smith', 'John', 10, '1980-01-01')}
+\code{INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Doe','John', 3, '1981-12-25')}
+
+You should see the following:
+
+\begin{verbatim}
+SnakeSQL Interactive Prompt
+Type SQL or "exit" to quit, "help", "copyright" or "license" for information.
+>>> CREATE TABLE Person (LastName String required, FirstName string, Number Inte
+ger, DateOfBirth Date)
+Query OK, 0 rows affected (0.01 sec)
+
+>>> INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Smith
+', 'John', 10, '1980-01-01')
+Query OK, 1 row affected (0.02 sec)
+
+>>> INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Doe',
+ 'John', 3, '1981-12-25')
+Query OK, 1 row affected (0.01 sec)
+
+>>>
+\end{verbatim}
+
+\note{There shouldn't be any carriage returns when you write the SQL at the prompt. The SQL will automatically wrap to the next line as shown in the examples.}
+
+The table will now be the same as in the above examples. You can test the select statement:
+
+\begin{verbatim}
+>>> select * from Person
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+2 rows in set (0.01 sec)
+
+>>>
+\end{verbatim}
+
+Feel free to experiment with the select statement.
+
+\subsection{The WHERE Clause}
+
+The WHERE clause is used to specify a selection criterion.
+
+The syntax of the where clause is:
+\begin{verbatim}
+SELECT column FROM table WHERE column operator value
+\end{verbatim}
+
+With the WHERE clause, the following operators can be used:
+
+\begin{verbatim}
+Operator    Description
+--------    -----------
+=           Equal
+<>          Not equal
+>           Greater than
+<           Less than
+>=          Greater than or equal
+<=          Less than or equal
+LIKE        Pattern match (described later)
+\end{verbatim}
+%BETWEEN 	Between an inclusive range
+
+\note{In some versions of SQL the \code{<>} operator may be written as \code{!=} but not in SnakeSQL. Note that the equals operator in SQL is \code{=} not \code{==} as it is in Python.}
+
+\subsubsection{Using the WHERE Clause}
+
+To select only the people whose last name are \code{Smith}, we add a WHERE clause to the SELECT statement:
+
+\begin{verbatim}
+SELECT * FROM Person WHERE LastName='Smith'
+\end{verbatim}
+
+Person table:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+Result set:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+\subsubsection{Using Quotes}
+
+Note that we have used single quotes around the conditional values in the examples.
+
+SQL uses single quotes around text values (some database systems will also accept double quotes, not SnakeSQL). Numeric values should not be enclosed in quotes.
+
+For text values:
+
+This is correct:
+\begin{verbatim}
+SELECT * FROM Person WHERE LastName='Smith'
+\end{verbatim}
+
+This is wrong:
+\begin{verbatim}
+SELECT * FROM Person WHERE LastName=Smith
+\end{verbatim}
+
+For numeric values:
+
+This is correct:
+\begin{verbatim}
+SELECT * FROM Person WHERE Number>10
+\end{verbatim}
+
+This is wrong:
+\begin{verbatim}
+SELECT * FROM Person WHERE Number>'10'
+\end{verbatim}
+
+\subsubsection{The LIKE Condition}
+
+The \code{LIKE} condition is used to specify a search for a pattern in a column.
+
+\begin{verbatim}
+SELECT column FROM table WHERE column LIKE pattern
+\end{verbatim}
+
+A \code{\%} sign can be used to define wildcards (missing letters in the pattern).
+
+The following SQL statement will return people with first names that start with an 'O':
+\begin{verbatim}
+SELECT * FROM Person WHERE FirstName LIKE 'O%'
+\end{verbatim}
+
+The following SQL statement will return people with first names that end with an 'a':
+\begin{verbatim}
+SELECT column FROM table WHERE FirstName LIKE '%a'
+\end{verbatim}
+
+The following SQL statement will return people with first names that contain the pattern 'la':
+\begin{verbatim}
+SELECT column FROM table WHERE FirstName LIKE '%la%'
+\end{verbatim}
+
+You can use as many \code{\%} characters as you need in the pattern to match zero or more characters. If you need to have an actual \code{\%} characters in the pattern you will need to escape it like this \code{\\\%}.
+
+The following SQL statement will return values that end with a \code{\%} character.
+
+\begin{verbatim}
+SELECT column FROM table WHERE Percentage LIKE '%\%'
+\end{verbatim}
+
+
+Snake SQL does not support the \code{BETWEEN} condition since the same thing can be achieved using comparison operators.
+
+\subsection{The INSERT INTO Statement}
+
+The INSERT INTO statement is used to insert new rows into a table.
+
+Syntax
+%\begin{verbatim} # XXX Not supported
+%INSERT INTO table_name VALUES (value1, value2,....)
+%\end{verbatim}
+%You can also specify the columns for which you want to insert data:
+\begin{verbatim}
+INSERT INTO table_name (column1, column2,...) VALUES (value1, value2,....)
+\end{verbatim}
+
+\paragraph{Insert a New Row}
+
+This Person table:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+And this SQL statement:
+\begin{verbatim}
+INSERT INTO Person (LastName, FirstName, Number, DateOfBirth)
+VALUES ('Blair', 'Tony', 8, '1953-05-06')
+\end{verbatim}
+
+\note{SnakeSQL expects the SQL to all be on one line. The line break here is for formatting}
+
+Will give this result:
+
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
+| 'Blair'  | 'Tony'    | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+
+\subsection{The UPDATE Statement}
+
+The UPDATE statement is used to modify the data in a table.
+
+Syntax:
+\begin{verbatim}
+UPDATE table_name SET column_name = new_value WHERE column_name = some_value
+\end{verbatim}
+
+\paragraph{Update one Column in a Row}
+
+Person table
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
+| 'Blair'  | 'Tony'    | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+We want to add a change Tony Blair's first name to \code{James}:
+
+\begin{verbatim}
+UPDATE Person SET FirstName = 'James' WHERE LastName = 'Blair'
+\end{verbatim}
+
+Person table
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+\paragraph{Update several Columns in a Row}
+
+We want to change the number of everyone with a FirstName \code{John} and make their DateOfBirth all \code{1980-01-01}:
+
+\begin{verbatim}
+UPDATE Person SET Number = 1, DateOfBirth = '1980-01-01' WHERE FirstName = 'John'
+\end{verbatim}
+Result:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+
+\subsection{The DELETE Statement}
+
+The DELETE statement is used to delete rows in a table.
+
+Syntax
+\begin{verbatim}
+DELETE FROM table_name
+WHERE column_name = some_value
+\end{verbatim}
+
+\paragraph{Delete a Row}
+
+Person:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+\code{John Doe} is going to be deleted:
+
+\begin{verbatim}
+DELETE FROM Person WHERE LastName = 'Doe'
+\end{verbatim}
+
+Result
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+
+\paragraph{Delete All Rows}
+
+It is possible to delete all rows in a table without deleting the table. This means that the table structure and attributes will be intact:
+%and indexes 
+
+\begin{verbatim}
+DELETE FROM table_name
+\end{verbatim}
+
+Result
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+\subsection{ORDER BY}
+
+The ORDER BY keyword is used to sort the result.
+
+\paragraph{Sort the Rows}
+
+The ORDER BY clause is used to sort the rows.
+
+Orders:
+\begin{verbatim}
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 1234        |
+| 'Tesco'     | 2345        |
+| 'Morrisons' | 7654        |
++-------------+-------------+
+\end{verbatim}
+
+To display the companies in alphabetical order:
+\begin{verbatim}
+SELECT Company, OrderNumber FROM Orders ORDER BY Company
+\end{verbatim}
+
+Result:
+\begin{verbatim}
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 1234        |
+| 'Morrisons' | 7654        |
+| 'Tesco'     | 2345        |
++-------------+-------------+
+\end{verbatim}
+
+\strong{Example}
+
+To display the companies in alphabetical order AND the order numbers in numerical order:
+\begin{verbatim}
+SELECT Company, OrderNumber FROM Orders ORDER BY Company, OrderNumber
+\end{verbatim}
+
+Result:
+\begin{verbatim}
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 1234        |
+| 'Morrisons' | 7654        |
+| 'Tesco'     | 2345        |
++-------------+-------------+
+\end{verbatim}
+
+\strong{Example}
+
+To display the companies in reverse alphabetical order:
+
+\begin{verbatim}
+SELECT Company, OrderNumber FROM Orders ORDER BY Company DESC
+\end{verbatim}
+
+Result:
+\begin{verbatim}
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Tesco'     | 2345        |
+| 'Morrisons' | 1234        |
+| 'Morrisons' | 7654        |
+| 'Asda'      | 5678        |
++-------------+-------------+
+\end{verbatim}
+
+\strong{Example}
+
+To display the companies in alphabetical order AND the order numbers in reverse numerical order:
+\begin{verbatim}
+SELECT Company, OrderNumber FROM Orders ORDER BY Company ASC, OrderNumber DESC
+\end{verbatim}
+
+Result:
+\begin{verbatim}
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 7654        |
+| 'Morrisons' | 1234        |
+| 'Tesco'     | 2345        |
++-------------+-------------+
+\end{verbatim}
+
+\subsection{AND \& OR}
+
+AND and OR join two or more conditions in a WHERE clause.
+
+The AND operator displays a row if ALL conditions listed are true. The OR operator displays a row if ANY of the conditions listed are true.
+
+Original Table (used in the examples)
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+Use AND to display each person with the first name equal to \code{John}, and the last name equal to \code{Smith}:
+
+\begin{verbatim}
+SELECT * FROM Person WHERE FirstName='John' AND LastName='Smith'
+\end{verbatim}
+
+Result Set
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+Use OR to display each person with the first name equal to \code{James}, or the last name equal to \code{Smith}:
+
+\begin{verbatim}
+SELECT * FROM Person WHERE FirstName='James' OR LastName='Smith'
+\end{verbatim}
+
+Result Set
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+
+\strong{Example}
+
+You can also combine AND and OR use parentheses to form complex expressions:
+
+
+\begin{verbatim}
+SELECT * FROM Person WHERE (FirstName='James' AND LastName='Smith') OR LastName='Blair'
+\end{verbatim}
+
+Result Set
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+\subsection{NULL Values}
+
+An important feature of SnakeSQL is its ability to support \code{NULL} values. A field which contains a \code{NULL} value is simply a field where no value has been set or the value as been set to contain no value. This is quite different, for example, from a \code{String} field which has been set a value \code{''}, an empty string.
+
+Original Table (used in the examples)
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+Our query
+\begin{verbatim}
+UPDATE Person SET FirstName=NULL WHERE LastName='Doe'
+\end{verbatim}
+
+Our table now looks like this:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | NULL      | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+This is quite different from this query which simply sets the FirstName to the string \code{'NULL'} not the value \code{NULL}:
+\begin{verbatim}
+UPDATE Person SET FirstName='NULL' WHERE FirstName=NULL
+\end{verbatim}
+
+Our table now looks like this:
+\begin{verbatim}
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'NULL'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+\end{verbatim}
+
+This is one of the reasons why it is important to use the correct quotations around values in you SQL.
+
+\note{Some SQL parsers consider \code{WHERE FirstName=NULL} to be incorrect because a field cannot be equal to nothing. Instead, they use \code{WHERE FirstName is NULL}. This seems too pedantic so SnakeSQL only supports the \code{WHERE FirstName=NULL} syntax.}
+
+If you inserted a row into the table without specifying all the columns the columns you had not specified would contain the value \code{NULL} unless you had specified a DEFAULT value when you created the table.
+
+\subsection{CREATE}
+
+To create a table in a database:
+
+Syntax
+\begin{verbatim}
+CREATE TABLE table_name
+(
+column_name1 data_type options,
+column_name2 data_type options,
+.......
+)
+\end{verbatim}
+
+\strong{Example}
+
+This example demonstrates how you can create a table named \code{Person}, with four columns. The column names will be \code{LastName}, \code{FirstName}, \code{Number}, and \code{DateOfBirth}:
+
+\begin{verbatim}
+CREATE TABLE Person (LastName String, FirstName String, Number String, DateOfBirth Date)
+\end{verbatim}
+
+The data_type specifies what type of data the column can hold. The table below contains the data types supported by SnakeSQL:
+
+\begin{tableii}{l|l}{code}%
+  {Data Type}{Description}
+  \lineii{\code{Bool}}    {Either \code{True} or \code{False}}
+  \lineii{\code{String}}  {A string field taking strings values up to 255 characters}
+  \lineii{\code{Text}}    {A text field for storing large amounts of text (up to 16k characters)}
+  \lineii{\code{Integer}} {An integer field taking any integer that is a valid Python integer (but \strong{not} long)}
+  \lineii{\code{Long}}    {Any valid Python long number}
+  \lineii{\code{Float}}   {Any Python floating point number}
+  \lineii{\code{Date}}{A date field. Takes values in the form of python \module{datetime} objects. Only stores days, months and years, any other information is truncated. Dates from \code{0001-01-01} to \code{9999-12-31}.}
+  \lineii{\code{Time}}{A time field. Takes values in the form of python \module{datetime} objects. Only stores hours, minutes and seconds, any other information is truncated.}
+  \lineii{\code{DateTime}}{A datetime field. Takes values in the form of python \module{datetime} objects. Only stores days, months, years, hours, minutes and seconds, any other information is truncated.}
+\end{tableii}
+
+The options can be used to further specify what values the field can take. They are described in the next sections.
+
+\paragraph{REQUIRED}
+
+In SnakeSQL, \code{REQUIRED} simply means that the field cannot contain a \code{NULL} value. If you insert a row into a table with a REQUIRED field, you must specify a value for the field unless you have also specified the field to have a DEFAULT value which isn't \code{NULL} in which case the default value will be used. If you try to set the field to NULL an error will be raised.
+
+To create a table with \code{LastName} and \code{FirstName} columns where \code{LastName} could not take a NULL value you would use:
+
+\begin{verbatim}
+CREATE TABLE Person (LastName String REQUIRED, FirstName String)
+\end{verbatim}
+
+\paragraph{UNIQUE}
+
+In SnakeSQL, a UNIQUE field is one in which all values in the table must be distinct. An error occurs if you try to add a new row with a key that matches an existing row. The exception to this is that if a column in the index is not specified as \code{REQUIRED}, i.e. it is allowed to contain NULL values, it can contain multiple NULL values.
+
+A PRIMARY KEY is a unique KEY where all key columns must be defined as NOT NULL. If they are not explicitly declared as NOT NULL, MySQL will declare them so implicitly (and silently). A table can have only one PRIMARY KEY. If you don't have a PRIMARY KEY and an application asks for the PRIMARY KEY in your tables, MySQL returns the first UNIQUE index that has no NULL columns as the PRIMARY KEY.
+
+To create a table with \code{LastName} and \code{FirstName} columns where all the values of \code{LastName} had to be different or \code{NULL} you would use:
+
+\begin{verbatim}
+CREATE TABLE Person (LastName String UNIQUE, FirstName String)
+\end{verbatim}
+
+If a field is specified as UNIQUE, SnakeSQL will not also let you specify a DEFAULT value.
+
+\paragraph{PRIMARY KEY}
+
+A PRIMARY KEY in SnakeSQL is a field which cannot be NULL, must be UNIQUE and does not take a DEFAULT value. Each table can only have one field as a PRIMARY KEY.
+
+Primary keys can be used by SnakeSQL's drivers to speed up database queries. 
+
+To create a table with \code{LastName} and \code{FirstName} columns where \code{LastName} is a primary key use:
+
+\begin{verbatim}
+CREATE TABLE Person (LastName String PRIMARY KEY, FirstName String)
+\end{verbatim}
+
+\paragraph{DEFAULT}
+
+The DEFAULT option is used to specify a default value for a field to be used if a value isn't specified when a new row is added to a table.
+
+To create a table with \code{LastName} and \code{FirstName} columns where the default value for \code{LastName} is 'Smith' we would use:
+
+\begin{verbatim}
+CREATE TABLE Person (LastName String DEFAULT='Smith', FirstName String)
+\end{verbatim}
+
+You cannot specify a DEFAULT if the column is a PRIMARY KEY or UNIQUE.
+
+If no DEFAULT is specified the DEFAULT is \code{NULL}
+
+\paragraph{FOREIGN KEY\label{ForeignKeys}}
+
+Tables in a database can be related to each other with keys. A primary key is a column with a unique value for each row. The purpose is to bind data together, across tables, without repeating all of the data in every table.
+
+In the \code{People} table below, the \code{LastName} column is the primary key, meaning that no two rows can have the same \code{LastName}. The \code{LastName} distinguishes two persons even if they have the same name.
+
+When you look at the example tables below, notice that: 
+\begin{itemize}
+\item
+The \code{LastName} column is the primary key of the \code{People} table
+\item
+The \code{House} column is the primary key of the \code{Houses} table
+\item
+The \code{Owner} column in the \code{House} table is used to refer to the people in the \code{People} table. \code{Owner} is a foreign key field.
+\end{itemize}
+
+\begin{verbatim}
+People
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | James     | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+
+Houses
++-------+-------+
+| House | Owner |
++-------+-------+
+| 1     | Smith |
++-------+-------+
+| 2     | Smith |
++-------+-------+
+| 3     | Doe   |
++-------+-------+
+\end{verbatim}
+
+People may own more than one house. In our example John Smith owns both House \code{1} and \code{2}. In order to keep the database consistent you would not want to remove \code{Smith} from the \code{People} table or drop the \code{People} table because the \code{Houses} table would still contain a reference to \code{Smith}. Similarly you wouldn't want to insert or update a value in the \code{Owner} column of the \code{Houses} table which didn't exist as a primary key for the \code{People} table.
+
+By specifying the \code{Owner} column of the \code{Houses} table as a foregin key these constraints are enforced by SnakeSQL.
+
+The SQL for the tables is below. \note{The line breaks in the first \code{CREATE} statement are for formatting; SnakeSQL doesn't support line breaks in SQL.}
+
+\begin{verbatim}
+CREATE TABLE People (
+    LastName String PRIMARY KEY, FirstName String, 
+    Number Integer, DateOfBirth Date
+)
+CREATE TABLE Houses (House Integer, Owner String FOREIGN KEY=People)
+\end{verbatim}
+
+If a column is specified \code{FOREIGN KEY} it cannot have any other options. The table specified as providing the foreign key must have a primary key. It is the primary key value which is used as a foreign key in the other table.
+
+%\paragraph{Combinations of Options}
+
+%You can use more than one option for the same column. Below are all the options written out:
+
+%\begin{verbatim}
+%column_name1 data_type REQUIRED,
+%column_name1 data_type UNIQUE,
+%column_name1 data_type PRIMARY KEY,
+%column_name1 data_type DEFAULT='SomeValue',
+%column_name1 data_type REQUIRED UNIQUE,
+%column_name1 data_type REQUIRED DEFAULT='SomeValue',
+%\end{verbatim}
+
+%You could also use the following but PRIMARY KEYS are automatically UNIQUE and REQUIRED:
+
+%\begin{verbatim}
+%column_name1 data_type REQUIRED PRIMARY KEY,
+%column_name1 data_type UNIQUE PRIMARY KEY,
+%column_name1 data_type REQUIRED UNIQUE PRIMARY KEY,
+%\end{verbatim}
+
+\subsection{DROP Table}% and Database}
+
+\paragraph{Delete a Table}
+
+To delete a table (the table structure and attributes will also be deleted): %and indexes 
+
+\begin{verbatim}
+DROP TABLE table_name
+\end{verbatim}
+
+\note{If you are using foreign key constraints you cannot drop a parent table if the child table still exists you should drop the child table first.}
+
+If you want to drop more than one table you can use this alternative syntax:
+
+\begin{verbatim}
+DROP TABLE table1, table2, table3
+\end{verbatim}
+
+%\paragraph{Delete a Database}
+
+%To delete a database:
+
+%\begin{verbatim}
+%DROP DATABASE database_name
+%\end{verbatim}
+
+
+\subsection{Joins}
+
+Sometimes we have to select data from two or more tables to make our result complete. We have to perform a join. Joins and the use of primary and foreign keys are inter-related. See the documentation on foreign keys in the \code{CREATE} statement section.
+
+\begin{verbatim}
+People
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | James     | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+
+Houses
++-------+-------+
+| House | Owner |
++-------+-------+
+| 1     | Smith |
++-------+-------+
+| 2     | Smith |
++-------+-------+
+| 3     | Doe   |
++-------+-------+
+\end{verbatim}
+
+We can select data from two tables by referring to two tables, using the SQL below. \note{The line breaks are just for formatting; SnakeSQL doesn't support line breaks in SQL.}
+
+\begin{verbatim}
+SELECT Houses.House, People.FirstName, Houses.Owner 
+FROM People, Houses 
+WHERE People.LastName=Houses.Owner
+\end{verbatim}
+
+Here is the result
+\begin{verbatim}
++--------------+------------------+--------------+
+| Houses.House | People.FirstName | Houses.Owner |
++--------------+------------------+--------------+
+| 1            | 'John'           | 'Smith'      |
+| 2            | 'John'           | 'Smith'      |
+| 3            | 'James'          | 'Doe'        |
++--------------+------------------+--------------+
+\end{verbatim}
+
+and another example:
+
+\begin{verbatim}
+SELECT Houses.House, People.FirstName, Houses.Owner 
+FROM People, Houses 
+WHERE People.LastName=Houses.Owner  and People.DateOfBirth<'1981-01-01'
+\end{verbatim}
+
+Here is the result
+\begin{verbatim}
++--------------+------------------+--------------+
+| Houses.House | People.FirstName | Houses.Owner |
++--------------+------------------+--------------+
+| 1            | 'John'           | 'Smith'      |
+| 2            | 'John'           | 'Smith'      |
++--------------+------------------+--------------+
+\end{verbatim}
+
+\section{Advanced Usage - Cursor Abstraction Methods}
+
+As well as supporting the standard DB-API 2.0 SnakeSQL \code{cursor} objects also have a number of SQL methods to allow you to manipulate the database without using SQL strings. These methods build SQL strings which you can then execute.
+
+For example, we can produce an SQL SELECT statement as follows:
+
+\begin{verbatim}
+>>> print cursor.select(
+...     tables=['tableName'],
+...     columns=[
+...         'columnOne',
+...         'columnTwo',
+...         'columnThree',
+...     ]
+... )
+...
+SELECT columnOne, columnTwo, columnThree FROM tableName
+\end{verbatim}
+
+At first sight this looks more complicated than using the methods described earlier. When you are writing SQL code in Python you often already have the variables in the form required by these cursor methods and so it is actually easier to use these methods than putting together the parts into a string. 
+
+
+\subsection{SQL Cursor Methods}
+
+For the values \var{execute}, \var{format} and \var{}
+These methods are used to build an SQL string and (optionally) to execute the result.
+
+\begin{methoddesc}{select}{\var{tables}, \var{columns}, \optional{where=None, }\optional{order=None, }\optional{execute=None, }\optional{format=None, }}
+
+Build an SQL string acording to to the options specified and optionally execute the SQL and return the results in the format specified. No error checking on field names if the SQL string is only being built. Strict error checking is only performed when executing the code.
+
+\begin{description}
+\item[\var{tables}]
+A string containing the name of the table to select from or if selecting from multiple tables, a list or tuple of table names.
+\item[\var{columns}]
+A list or tuple of column names to select. Can be a string if only one column is being selected. If selecting from multiple tables, all column names should be in the form \code{'tableName.columnName'}
+%\item[\var{as}]
+%A list or tuple of aliases in the same order as columns, specified by None if no alias is to be used.
+\item[\var{where}]
+The WHERE clause as a SnakeSQL list as returned by \code{cursor.where()}. If \var{where} is a string it is converted to the correct format.
+\item[\var{order}]
+The ORDER BY clause as a SnakeSQL list as returned by \code{cursor.order()}. If \var{order} is a string it is converted to the correct format.
+\item[\var{execute}]
+If \code{False} the function returns the SQL string needed to perform the desired operations. If \code{True} the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is \code{True}
+\item[\var{format}]
+The format of the results returned. Can be \code{'dict'} to return them as a tuple of dictionary objects, \code{'tuple'} to return them as a tuple of tuples, \code{'object'} to return them as a tuple of dtuple objects which can be treated as a tuple or a dictionary or \code{'text'} to return tables designed to be displayed in a terminal 80 characters wide. If not specified takes the value specifed in the cursor which by default is \code{'tuple'}
+%\item[\var{distinct=False}]
+%If \var{distinct} is \code{True} then only unique values matching the where clause are selected. Equivalant to the SQL DISTINCT keyword.
+\end{description}
+\end{methoddesc}
+
+
+\begin{methoddesc}[cursor]{insert}{\var{table}, \var{columns}, \var{values}, \var{sqlValues}, \optional{execute}}
+Insert values into the coulmns in table. Either \var{values} or \var{sqlValues} can be specified but not both.
+\begin{description}
+\item[\var{table}]
+The name of the table to insert into
+\item[\var{columns}]
+A list or tuple of column names in the same order as the values which are going to be inserted into those columns. Can be a string if only one column is going to have values inserted
+\item[\var{values}]
+A list or tuple of Python values to be inserted into the columns named in the \var{columns} variable. Can be the value rather than a list if there is only one value. If \var{values} is specified then \var{sqlValues} cannot be used.
+\item[\var{sqlValues}]
+A list or tuple of quoted SQL strings to be inserted into the columns named in the \var{columns} variable. Can be the value rather than a list if there is only one value. If \var{sqlValues} is specified then \var{values} cannot be used.
+\item[\var{execute}]
+If \code{False} the function returns the SQL string to perform the desired operations. If \code{True} the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is \code{True}
+\end{description}
+\end{methoddesc}
+
+ 
+\begin{methoddesc}[cursor]{update}{ \var{table}, \var{columns}, \var{values}, \var{sqlValues}, \optional{, where} \optional{, execute}}
+Update the columns in table with the values. Either \var{values} or \var{sqlValues} can be specified but not both.
+\begin{description}
+\item[\var{table}]
+A string containing the name of the table to update
+\item[\var{columns}]
+A list or tuple of column names in the same order as the values which are going to be updated in those columns. Can be a string if only one column is going to have values inserted
+\item[\var{values}]
+A list or tuple of Python values to be updated in the order of the columns named in the \var{columns} variable. Can be the value rather than a list if there is only one value. If \var{values} is specified then \var{sqlValues} cannot be used.
+\item[\var{sqlValues}]
+A list or tuple of quoted SQL strings to be updated in the order of the columns named in the \var{columns} variable. Can be the value rather than a list if there is only one value. If \var{sqlValues} is specified then \var{values} cannot be used.
+\item[\var{where}]
+The WHERE clause as a SnakeSQL list as returned by \code{cursor.where()}. If \var{where} is a string it is converted to the correct format.
+\item[\var{execute}]
+If \code{False} the function returns the SQL string to perform the desired operations. If \code{True} the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is \code{True}
+\end{description}
+\end{methoddesc}
+
+\begin{methoddesc}[cursor]{delete}{ \var{table}, \optional{where} \optional{, execute}}
+Delete records from the table according to where.
+\begin{description}
+\item[\var{table}]
+A string containing the name of the table to select from or if selecting from multiple tables, a list or tuple of table names.
+\item[\var{where}]
+The WHERE clause as a SnakeSQL list as returned by \code{cursor.where()}. If \var{where} is a string it is converted to the correct format.
+\item[\var{execute}]
+If \code{False} the function returns the SQL string to perform the desired operations. If \code{True} the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is \code{True}
+\end{description}
+\end{methoddesc}
+
+\begin{methoddesc}[cursor]{create}{ \var{table}, \var{columns} \optional{, execute} }%\optional{, updateColInfoTable=True}
+
+Create table with fields specified by fields. fields is a tuple of field tuples which can be obtained as follows:
+\begin{verbatim}
+columns = [
+    cursor.column( field options... ),
+    cursor.column( field options... ),
+    cursor.column( field options... ),
+    cursor.column( field options... ),
+]
+\end{verbatim}
+\begin{description}
+\item[\var{table}]
+The table name as a string. 
+\item[\var{columns}]
+A tuple of field tuples returned by \code{cursor.column()}
+\item[\var{execute}]
+If \code{False} the function returns the SQL string to perform the desired operations. If \code{True} the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is \code{True}
+%\item[\var{updateColInfoTable}]
+%Update the colInfoTable XXX Should be done automatically.
+\end{description}
+\end{methoddesc}
+
+\begin{methoddesc}[cursor]{drop}{ \var{tables}\optional{, execute} }%\optional{, updateColInfoTable}
+Remove a table
+\begin{description}
+\item[\var{tables}]
+A string containing the name of the table to drop or if dropping multiple tables, a list or tuple of table names.
+\item[\var{execute}]
+If \code{False} the function returns the SQL string to perform the desired operations. If \code{True} the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is \code{True}
+%\item[\var{updateColInfoTable}]
+%Update the colInfoTable XXX Should be done automatically.
+\end{description}
+\end{methoddesc}
+
+\subsection{Helper Methods}
+
+\begin{methoddesc}{column}{\var{name}, \var{type}\optional{, required=0}\optional{, unique=0}\optional{, key=0}\optional{, default=None}}
+Return a column tuple suitable for use in the columns tuple used in the \method{create()} method
+\begin{description}
+\item[\code{name}]
+  The name of the field as a string.
+\item[\code{type}]
+  The fieldCode for the field. This can take one of the values: \code{'Char'}, \code{'String'}, \code{'Text'}, \code{'Integer'}, \code{'Float'}, \code{'Date'}, \code{'Time'}, \code{'DateTime'}
+\item[\code{required}]
+  Whether or not the field is required. Setting to \code{True} means the field cannot have \code{NULL} values.
+\item[\code{unique}]
+  Set to \code{True} if the value must be unique. Two fields in the column cannot have the same value unless that value is NULL
+\item[\code{key}]
+  The field is to be used as a primary key, the field has the same behaviour as being unique and required but no default value can be set
+\item[\code{default}]
+  The default value for the field to be set to. If not specified the default is NULL 
+\end{description}
+\end{methoddesc}
+
+\begin{methoddesc}{where}{\var{where}}
+Return a parsed \code{WHERE} clause suitable for use in the \method{select()}, \method{update()} and \method{delete()} methods of the \code{cursor} object.
+\begin{description}
+\item[\var{where}]
+A string containing the \code{WHERE} clause. \note{ \var{where} should not include the string \code{'WHERE'} at the begining.}
+\end{description}
+\end{methoddesc}
+
+\begin{methoddesc}{order}{\var{order}}
+Return a parsed \code{ORDER BY} clause suitable for use in the \method{select()} method of the \code{cursor} object.
+\begin{description}
+\item[\var{order}]
+A string containing the \code{ORDER BY} clause. \note{ \var{order} should not include the string \code{'ORDER BY'} at the begining.}
+\end{description}
+\end{methoddesc}
+
+\subsection{Automatically Executing SQL}
+
+If you want to execute the SQL as the cursor methods provide a parameter \var{execute}. If you specify this as \code{True} the SQL will be executed as shown below:
+
+\begin{verbatim}
+>>> print cursor.select(
+...     tables=['tableName'],
+...     columns=[
+...         'columnOne',
+...         'columnTwo',
+...         'columnThree',
+...     ],
+...     execute=True
+... )
+((1, 2, 3), (4, 5, 6),)
+\end{verbatim}
+
+If you always want the cursor methods to execute you can specify \var{execute}\code{=True} in the \method{cursor()} method of the \code{connection} object as shown below:
+
+\begin{verbatim}
+cursor = connection.cursor(execute=True)
+\end{verbatim}
+
+All the methods \method{select()}, \method{insert()}, \method{update()}, \method{delete()}, \method{create()}, \method{alter()} and \method{drop()} will automatically execute if you use the \code{cursor} in this mode. Also, using these methods is slightly faster since the SQL does not need to be parsed.
+
+The full specification for the cursor functions can be found in the Module Reference section.
+
+\subsection{Specifying the Results Format}
+
+You can change the way the results are returned from the database by specifying the \var{format} parameter in the \code{cursor} object \method{fetch()} methods or the \method{select()} method. 
+
+\var{format} can be:
+
+\begin{description}
+\item[\code{'tuple'}]
+The results are returned as a tuple of tuples.
+\item[\code{'dict'}]
+The results are returned as a tuple of dictionaries. Each dictionary has the column name as the key and the value of the field as the value.
+\item[\code{'object'}]
+The results are returned as a tuple of \code{dtuple} objects. Each \code{dtuple} can be treated either as a tuple or a dictionary or the field value can be accessed as an attribute of the object. \note{Certain field names will not work as attributes of the \code{dtuple} object since the field name maybe the same as an attribute name of the \code{dtuple} object}
+\item[\code{'text'}]
+The results are returned as a text format table designed to be displayed in a terminal of 80 characters width.
+\end{description}
+
+The default is \code{'tuple'} which is what fields are returned by a normal DB-API 2.0 database.
+
+Creating a cursor as follows will set the default format for fetching results to be \code{'dict'}.
+\begin{verbatim}
+cursor = connection.cursor(format='dict')
+\end{verbatim}
+
+%\subsection{Conversion Methods}
+
+%\code{cursor} objects also have conversion methods to convert field types. Methods are named \code{cursor.toString()} and \code{cursor.sqlToString()}
+
+\section{Internal Workings}
+
+\code{cursor} objects have an attribute named \code{.tables}. This is a dictionary of table name keys, each containing a \code{Table} object. Each table object contains information about the columns in the table which can be used to get properties or to conversion methods for those columns.
+
+\subsection{Table Objects}
+
+Table objects store all the meta data there is to know about an SQL table. A simple Table class might look like this:
+\begin{verbatim}
+class Table:
+    def __init__(self, name, columns=[]):
+        self.name = name
+        self.columns = tuple(columns)
+        self.primaryKey = None
+        self.parentTables = []
+        self.childTables = []
+
+    def columnExists(self, columnName):
+        for column in self.columns:
+            if column.name == columnName:
+                return True
+        return False
+
+    def column(self, columnName):
+        for column in self.columns:
+            if column.name == columnName:
+                return column
+        raise DataError("Column %s not found."%(repr(columnName)))
+\end{verbatim}
+
+Table objects must have the following two atrributes:
+
+\begin{description}
+\item[\code{name}]      
+The name of the table
+\item[\code{columns}]      
+A tuple of Column objects in the order in which the columns are returned by a \code{SELECT * FROM table} statement
+\end{description}
+
+They should have the following methods:
+
+\begin{description}
+\item[\code{column(\var{name})}]      
+Return the column named \var{name}
+\item[\code{columnExists(\var{name})}]       
+Return \code{True} if the table has a column named \var{name}, \code{False} otherwise
+\end{description}
+
+Table objects could also contain any other useful methods which the module implementer chooses.
+    
+\subsection{Column Objects}
+
+Column objects store all the meta data there is to know about a particular column. A simple columm class would look like this:
+\begin{verbatim}
+class Column:
+    def __init__(self, table, name, type, required, unique, key, default, converter, position):
+        self.name = name
+        self.type = type
+        self.table = table
+        self.required = required
+        self.unique = unique
+        self.key = key
+        self.default = default
+        self.converter = converter
+        self.position = position
+
+    def get(self, columnName):
+        for column in self.columns:
+            if column.name == columnName:
+                return column
+        raise DataError("Column %s not found."%(repr(columnName)))
+\end{verbatim}
+
+Attributes
+\begin{description}
+\item[\code{name}]      
+The name of the column
+\item[\code{type}]      
+The capitalised string representing the column type
+\item[\code{baseType}]      
+The capitalised string representing the column type of the base type
+\item[\code{table}]      
+The table of which the column is a part
+\item[\code{required}]
+Can be \code{True} or \code{False} depending on whether the column value is required (ie cannot be NULL) or not
+\item[\code{unique}]      
+\code{True} if the field should be unique, \code{False} otherwise
+\item[\code{key}]      
+\code{True} if the field is a primary key, \code{False} otherwise
+\item[\code{default}]      
+The default value of the field
+\item[\code{converter}]      
+A reference to the converter for the field type
+\item[\code{position}]      
+The position of the field in the tuple returned by \code{SELECT * FROM table}
+\end{description}
+
+\subsection{More Information}
+
+SnakeSQL is designed in a way to allow it to be easy to create custom field types or new drivers. This really needs a good few pages of explanation which I haven't had time to document yet. Please get in touch help@pythonweb.org if you plan to write such extensions.
+
+%XXX Incomplete and currently inaccurate
+
+%\subsection{tableFiles and tableStructure dictionaries}
+
+%Each \code{Cursor} object has a memeber variable named \code{connection} holding the \code{Connection} object. Ie \code{cursor.connection} is the \code{connection} object.
+
+%The \code{Connection} object has two arrtibutes important attributes: \code{tableFiles} and \code{tableStructure}. \code{tableFiles} is a dictionary of \code{table name} keys : \code{open file object} values. 
+
+%\code{tableStructure} is a dictionary of table name keys, each containing a dictionary of \code{column name} keys : \code{colummn structure list} values. Each column structure list is of the form \code{[name, data type, required, default value, unique, primary key, column position]}. For example:
+
+%\begin{verbatim}
+%XXX
+%\end{verbatim}
+
+%The \code{tableStructure} is obtained from the table specified by the Column Types table named with the parameter \var{colTypes} and is used to determine operations on each field. The \code{tableFiles} dictionary of open DBM file objects is used to store, retrieve and update information in the database.
+
+%\subsection{WHERE clauses}
+
+%\code{where} clauses are the key to an SQL database. Rather than parsing \code{where} clauses to obtain relevant records, this module uses Python's \function{exec()} function to execute the \code{where} clause as Python code for each record of the database.
+
+\section{Licence}
+
+SnakeSQL is released under the GNU GPL.
+
+\verbatiminput{gpl.txt}
+
+\section{Changes}
+
+\verbatiminput{CHANGES.txt}
+
+\section{Future Plans}
+
+\verbatiminput{TODO.txt}
+
+\end{document}

@@ -1,0 +1,3056 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<link rel="STYLESHEET" href="snakesql.css" type='text/css'>
+<link rel="SHORTCUT ICON" href="pyfav.png">
+<link rel="first" href="snakesql.html" title='SnakeSQL'>
+<link rel='contents' href='snakesql.html' title="Contents">
+<link rel='last' href='about.html' title='About this document...'>
+<link rel='help' href='about.html' title='About this document...'>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name='aesop' content='information'>
+<META NAME="description" CONTENT="SnakeSQL">
+<META NAME="keywords" CONTENT="snakesql">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<title>SnakeSQL</title>
+</head>
+<body>
+<DIV CLASS="navigation">
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+<td align="center" width="100%">SnakeSQL</td>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<br><hr>
+</DIV>
+<!--End of Navigation Panel-->
+
+<div class="titlepage">
+<center>
+<h1>SnakeSQL</h1>
+<p><b><font size="+2">James Gardner</font></b></p>
+<p>
+	<a class="url" href="http://www.pythonweb.org/projects/snakesql/">http://www.pythonweb.org/projects/snakesql/</a>
+<BR>	<span class="email">docs at pythonweb.org</span>
+</p>
+<p><strong>19 December 2004</strong></p>
+<p>
+</center>
+</div>
+<DIV ALIGN="CENTER">
+&#169; 2002-2004 James Gardner All rights reserved.
+
+</DIV>
+
+<P>
+<BR>
+<BR><H2><A NAME="SECTION000100000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL CLASS="TofC">
+<LI><A href="snakesql.html">1 Abstract</a>
+<LI><A href="snakesql.html#SECTION000300000000000000000">2 Installation Options</a>
+<UL>
+<LI><A href="snakesql.html#SECTION000310000000000000000">2.1 Install SnakeSQL</a>
+<LI><A href="snakesql.html#SECTION000320000000000000000">2.2 Put SnakeSQL in your script directory</a>
+<LI><A href="snakesql.html#SECTION000330000000000000000">2.3 Modify your PYTHONPATH Environmental Variable</a>
+<LI><A href="snakesql.html#SECTION000340000000000000000">2.4 Modify sys.path</a>
+<LI><A href="snakesql.html#SECTION000350000000000000000">2.5 Testing your Installation</a>
+</ul>
+<LI><A href="snakesql.html#SECTION000400000000000000000">3 Learning SnakeSQL</a>
+<UL>
+<LI><A href="snakesql.html#SECTION000410000000000000000">3.1 Understanding Field Types</a>
+<LI><A href="snakesql.html#SECTION000420000000000000000">3.2 Multiple Users and Locks</a>
+</ul>
+<LI><A href="snakesql.html#SECTION000500000000000000000">4 Using the Interactive Prompt</a>
+<UL>
+<LI><A href="snakesql.html#SECTION000510000000000000000">4.1 Listing the Options</a>
+<LI><A href="snakesql.html#SECTION000520000000000000000">4.2 Creating a Database</a>
+<LI><A href="snakesql.html#SECTION000530000000000000000">4.3 Using the Prompt</a>
+</ul>
+<LI><A href="snakesql.html#SECTION000600000000000000000">5 Using SnakeSQL as a DB-API 2.0 Database</a>
+<UL>
+<LI><A href="snakesql.html#SECTION000610000000000000000">5.1 Connecting to a Database and Obtaining a Cursor</a>
+<LI><A href="snakesql.html#SECTION000620000000000000000">5.2 Executing SQL</a>
+<LI><A href="snakesql.html#SECTION000630000000000000000">5.3 Retrieving Results</a>
+<LI><A href="snakesql.html#SECTION000640000000000000000">5.4 Transactions, Rollbacks and Committing Changes</a>
+</ul>
+<LI><A href="snakesql.html#SECTION000700000000000000000">6 Special Characters</a>
+<UL>
+<LI><A href="snakesql.html#SECTION000710000000000000000">6.1 In Python</a>
+<LI><A href="snakesql.html#SECTION000720000000000000000">6.2 Interactive Prompt</a>
+<LI><A href="snakesql.html#SECTION000730000000000000000">6.3 In SQL</a>
+<LI><A href="snakesql.html#SECTION000740000000000000000">6.4 The Easy Way</a>
+</ul>
+<LI><A href="snakesql.html#SECTION000800000000000000000">7 SQL Reference</a>
+<UL>
+<LI><A href="snakesql.html#SECTION000810000000000000000">7.1 What is SQL?</a>
+<LI><A href="snakesql.html#SECTION000820000000000000000">7.2 The SELECT Statement</a>
+<LI><A href="snakesql.html#SECTION000830000000000000000">7.3 The WHERE Clause</a>
+<LI><A href="snakesql.html#SECTION000840000000000000000">7.4 The INSERT INTO Statement</a>
+<LI><A href="snakesql.html#SECTION000850000000000000000">7.5 The UPDATE Statement</a>
+<LI><A href="snakesql.html#SECTION000860000000000000000">7.6 The DELETE Statement</a>
+<LI><A href="snakesql.html#SECTION000870000000000000000">7.7 ORDER BY</a>
+<LI><A href="snakesql.html#SECTION000880000000000000000">7.8 AND &amp; OR</a>
+<LI><A href="snakesql.html#SECTION000890000000000000000">7.9 NULL Values</a>
+<LI><A href="snakesql.html#SECTION0008100000000000000000">7.10 CREATE</a>
+<LI><A href="snakesql.html#SECTION0008110000000000000000">7.11 DROP Table</a>
+<LI><A href="snakesql.html#SECTION0008120000000000000000">7.12 Joins</a>
+</ul>
+<LI><A href="snakesql.html#SECTION000900000000000000000">8 Advanced Usage - Cursor Abstraction Methods</a>
+<UL>
+<LI><A href="snakesql.html#SECTION000910000000000000000">8.1 SQL Cursor Methods</a>
+<LI><A href="snakesql.html#SECTION000920000000000000000">8.2 Helper Methods</a>
+<LI><A href="snakesql.html#SECTION000930000000000000000">8.3 Automatically Executing SQL</a>
+<LI><A href="snakesql.html#SECTION000940000000000000000">8.4 Specifying the Results Format</a>
+</ul>
+<LI><A href="snakesql.html#SECTION0001000000000000000000">9 Internal Workings</a>
+<UL>
+<LI><A href="snakesql.html#SECTION0001010000000000000000">9.1 Table Objects</a>
+<LI><A href="snakesql.html#SECTION0001020000000000000000">9.2 Column Objects</a>
+<LI><A href="snakesql.html#SECTION0001030000000000000000">9.3 More Information</a>
+</ul>
+<LI><A href="snakesql.html#SECTION0001100000000000000000">10 Licence</a>
+<LI><A href="snakesql.html#SECTION0001200000000000000000">11 Changes</a>
+<LI><A href="snakesql.html#SECTION0001300000000000000000">12 Future Plans</a>
+<LI><A href="snakesql.html#SECTION0001400000000000000000">About this document ...</a>
+</ul>
+<!--End of Table of Contents-->
+<P>
+
+<H1><A NAME="SECTION000200000000000000000">
+1 Abstract</A>
+</H1>
+
+<P>
+<b>SnakeSQL -- Pure Python SQL database supporting NULLs</b>
+
+<P>
+SnakeSQL is a pure Python SQL database written to remove the dependence of the Python Web Modules on 3rd party drivers for non-Python databases like MySQL.
+
+<P>
+The database supports the simplest possible subset of ANSI SQL 92 including NULLs (something other pure Python databases such as Gadfly do not currently support). 
+
+<P>
+The database is fully DB-API 2.0 compliant and is written in layers so that it can easily be extended to support different storage mechanisms. Currently implemented are a fast binary DBM driver (default) and a slower CSV file driver (handy for viewing table contents when designing and developing an application or database structure).
+
+<P>
+<div class="seealso">
+  <p class="heading"><b>See Also:</b></p>
+
+  <dl compact class="seetitle">
+    <dt><em class="citetitle"><a href="http://www.python.org/topics/database/"
+        >Python DB-SIG Pages</a></em>
+    <dd>To find out more about the DB-API 2.0 or how to program using DB-API 2.0 methods, please visit <a class="url" href="http://www.python.org/topics/database/">http://www.python.org/topics/database/</a>.
+  </dl>
+</div>
+
+<P>
+
+<H1><A NAME="SECTION000300000000000000000">
+2 Installation Options</A>
+</H1>
+
+<P>
+Quick answer: <code>python setup.py install</code>
+
+<P>
+If you need more information than that, read on...
+
+<P>
+SnakeSQL doesn't actually need formally installing although it is easiest if you do install it. The only requirement is that either the <tt class="module">SnakeSQL</tt> module folder is in a place where Python looks for modules or you explicitly tell Python where it is. It really is very easy but I've tried to explain it in full which is why there are so many options.
+
+<P>
+
+<H2><A NAME="SECTION000310000000000000000">
+2.1 Install SnakeSQL</A>
+</H2>
+
+<P>
+The easiest way to get the <span class="file">SnakeSQL</span> module directory listed on your <code>PYTHONPATH</code> environmental variable is to install the software to your Python <span class="file">Lib/site-packages</span> directory where Python looks for new modules. 
+
+<P>
+This method will only work if you have appropriate permissions. If you are using SnakeSQL on a hosted server for example, one of the other options might be more suitable. Try this first though.
+
+<P>
+Windows Users: Double click <span class="file">setup.py</span> and follow the instructions.
+
+<P>
+All others: Load up a shell. In the installation directory execute the command below and follow the instructions:
+<div class="verbatim"><pre>
+python setup.py install
+</pre></div>
+
+<P>
+<span class="note"><b class="label">Note:</b>
+Bear in mind that Python on your system may be called <code>python2</code> or <code>python2.3</code> so replace <code>python</code> in the example above with whatever is appropriate for your platform.</span>
+
+<P>
+
+<H2><A NAME="SECTION000320000000000000000">
+2.2 Put SnakeSQL in your script directory</A>
+</H2>
+
+<P>
+Place the <span class="file">SnakeSQL</span> directory of the distribution in the same directory as the script which uses the modules. This works because Python always searches the directory containing a script when looking for modules.
+
+<P>
+<span class="warning"><b class="label">Warning:</b>
+Be careful to use the correct <span class="file">SnakeSQL</span> directory. The one you need to copy is not the one containing the <span class="file">setup.py</span> script, it is the <span class="file">SnakeSQL</span> directory in the <span class="file">SnakeSQL</span> directory which contains the <span class="file">setup.py</span> script.</span>
+
+<P>
+
+<H2><A NAME="SECTION000330000000000000000">
+2.3 Modify your PYTHONPATH Environmental Variable</A>
+</H2>
+
+<P>
+<code>PYTHONPATH</code> is an environmental variable which contains a list of places Python should look for modules. You can add the full path to the correct <span class="file">SnakeSQL</span> directory (see warning above) to this environmental variable. For information on how to set environmental variables refer to your operating system's help.
+
+<P>
+
+<H2><A NAME="SECTION000340000000000000000">
+2.4 Modify sys.path</A>
+</H2>
+
+<P>
+The <code>sys.path</code> variable is a list of places Python looks for modules. You can add the directory to SnakeSQL to your <code>sys.path</code> variable using code similar to the following in every file using the modules:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; import sys
+&gt;&gt;&gt; sys.path.insert(0,'C:/path/to/distribution/directory')
+</pre></div>
+replacing <span class="file">C:/path/to/distribution/directory</span> with the path to the directory containing the correct <span class="file">SnakeSQL</span> directory.
+
+<P>
+<span class="note"><b class="label">Note:</b>
+Even on windows you can use the <code>/</code> character for paths. This saves you having to use escape characters to escape backslashes.</span>
+
+<P>
+
+<H2><A NAME="SECTION000350000000000000000">
+2.5 Testing your Installation</A>
+</H2>
+
+<P>
+To test your installation load up a command prompt and start Python (Windows XP users can load Python if it is installed by clicking Start-&gt;Run and typing <code>python</code> then pressing enter).
+
+<P>
+You should see something similar to the following:
+
+<P>
+<div class="verbatim"><pre>
+Python 2.2.3 (#42, May 30 2003, 18:12:08) [MSC 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+Enter the following line of code and press enter:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; import SnakeSQL
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+If you get another empty prompt as shown above then the installation has worked. You may get an error message like the one shown below:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; import SnakeSQL
+Traceback (most recent call last):
+  File "&lt;stdin&gt;", line 1, in ?
+ImportError: No module named SnakeSQL
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+If you see an <code>ImportError</code> it means that Python could not find the SnakeSQL module. You should go over the steps in this section again.
+
+<P>
+
+<H1><A NAME="SECTION000400000000000000000">
+3 Learning SnakeSQL</A>
+</H1>
+
+<P>
+
+<H2><A NAME="SECTION000410000000000000000">
+3.1 Understanding Field Types</A>
+</H2>
+
+<P>
+SnakeSQL is a typed database. This means the information you send to the database and the information retrieved from the database will be automatically converted to the correct formats so that you can treat the values as normal Python objects.
+
+<P>
+SnakeSQL currently supports the following types which are described in the SQL Reference section of this document:
+
+<P>
+<table border align="center" style="border-collapse: collapse">
+  <thead>
+    <tr class="tableheader">
+      <th align="left"><b>Type</b>&nbsp;</th>
+      <th align="left"><b>Description</b>&nbsp;</th>
+      </tr>
+    </thead>
+  <tbody valign="baseline">
+    <tr><td align="left" valign="baseline"><code><code>Bool</code></code></td>
+        <td align="left">True or False</td>
+    <tr><td align="left" valign="baseline"><code><code>Integer</code></code></td>
+        <td align="left">Any Python integer (not Python Long or Decimal)</td>
+    <tr><td align="left" valign="baseline"><code><code>Long</code></code></td>
+        <td align="left">Any Python long integer</td>
+    <tr><td align="left" valign="baseline"><code><code>Float</code></code></td>
+        <td align="left">Any Python floating point number</td>
+    <tr><td align="left" valign="baseline"><code><code>String</code></code></td>
+        <td align="left">A string of 255 characters or less (XXX Not unicode?)</td>
+    <tr><td align="left" valign="baseline"><code><code>Text</code></code></td>
+        <td align="left">A 24-bit string</td>
+    <tr><td align="left" valign="baseline"><code><code>Date</code></code></td>
+        <td align="left">Any valid Python <code>datetime.date</code> object. Takes values in the form of python <tt class="module">datetime</tt> objects. Only stores days, months and years, any other information is trunkated. Dates from <code>0001-01-01</code> to <code>9999-12-31</code>. </td>
+    <tr><td align="left" valign="baseline"><code><code>Time</code></code></td>
+        <td align="left">Any valid Python <code>datetime.time</code> object. Takes values in the form of python <tt class="module">datetime</tt> objects. Only stores hours, minutes and seconds, any other information is trunkated.</td>
+    <tr><td align="left" valign="baseline"><code><code>DateTime</code></code></td>
+        <td align="left">Any valid Python <code>datetime.datetime</code> object. Takes values in the form of python <tt class="module">datetime</tt> objects. Only stores days, months, years, hours, minutes and seconds, any other information is trunkated.</td>
+    </tbody>
+</table>
+
+<P>
+The values you pass to the <tt class="method">cursor.execute()</tt> method should be of the correct type for the field they are representing. The values returned by the <tt class="method">cursor.fetchall()</tt> method will automatically be returned as the appropriate Python type.
+
+<P>
+For example, <code>Bool</code> fields should have the Python values <code>True</code> or <code>False</code>, <code>Long</code> fields should be a valid Python <code>long</code> etc. 
+
+<P>
+There are some exceptions:
+
+<P>
+<code>String</code> fields should contain Python strings of 255 characters of less. <code>Text</code> fields should contain 24 bit strings less. For strings longer than this length you should consider saving the string in a file and saving the filename in the database instead.
+
+<P>
+<code>Date</code>, <code>Datetime</code> and <code>Time</code> fields take Python <code>datetime.date</code>, <code>datetime.datetime</code> and <code>datetime.time</code> objects respectively. 
+
+<P>
+Unfortunately Python 2.2 and below do not support the <tt class="module">datetime</tt> module. However SnakeSQL uses a compatibility module that behaves closely enough for most purposes. Simply import SnakeSQL and then you can import the datetime module automatically. This is what it looks like at the Python prompt: 
+
+<P>
+<div class="verbatim"><pre>
+Python 2.2.3 (#42, May 30 2003, 18:12:08) [MSC 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt; import SnakeSQL
+&gt;&gt;&gt; import datetime
+&gt;&gt;&gt; print datetime.date(2004,11,24)
+2004-11-24
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000420000000000000000">
+3.2 Multiple Users and Locks</A>
+</H2>
+
+<P>
+As mentioned earlier only one user can be make changes to a database at once (otherwise one user could over-write another user's information without the first user knowing). However, SnakeSQL is designed to work in a multi-threaded web environment when requests to read the database can happen from any process at any time. It is quite likely that more than one process will try to access a single database at once. If this happens, rather than raising an error, SnakeSQL will make any subsequent users wait until the first user finishes. 
+
+<P>
+In theory, one of the processes accessing the database could get stuck in an infinite loop and not release the lock on the database to allow other users to access it. After a period of 2 seconds, if the process with the current lock on the database doesn't access it, the lock will be released and another process can obtain a lock. The first process will itself have to wait to obtain a lock.
+
+<P>
+If after 10 seconds a process still hasn't obtained a lock on the database it will forcibly obtain a lock, rolling back the database to the state it was in before the first process started changing it (no data corruption). If the first process (which took far too long to make its changes) tries to access the database again it will not be able to and will raise an Error.
+
+<P>
+In this way the only time an error is raised when multiple processes try to access the database at once is when a process has waited for 10 seconds to obtain a lock and at least 4 database calls have been made in the time it has waited. This could only happen in the event that an extremely slow database gets a lock and keeps accessing the database to avoid losing its lock (bad programming) or your server is overloaded with too many processes (more than one every two seconds) accessing a database for two seconds or longer. Under this sort of load you would be better using MySQL or a faster server.
+
+<P>
+
+<H1><A NAME="SECTION000500000000000000000">
+4 Using the Interactive Prompt</A>
+</H1>
+
+<P>
+The SnakeSQL distribution comes with an Interactive Prompt which allows you to enter SQL queries directly into a database and see the results as a table of data. The <span class="file">snake.py</span> file is in the <span class="file">scripts</span> directory of the distribution. 
+
+<P>
+
+<H2><A NAME="SECTION000510000000000000000">
+4.1 Listing the Options</A>
+</H2>
+
+<P>
+To see a list of all the available options for starting an Interactive Prompt session, load a command prompt and type the following at the command line:
+
+<P>
+<div class="verbatim"><pre>
+&gt; python snake.py -h
+</pre></div>
+
+<P>
+This will display all the options available to you for using the interactive prompt. 
+
+<P>
+
+<H2><A NAME="SECTION000520000000000000000">
+4.2 Creating a Database</A>
+</H2>
+
+<P>
+To create and connect to a database named <code>test</code> type the following at the command line:
+
+<P>
+<div class="verbatim"><pre>
+&gt; python snake.py -c test
+</pre></div>
+
+<P>
+This will run the interactive prompt. The database we are using is called <code>test</code>. The <code>-c</code> option means automatically create the database if it doesn't already exist. You should see something similar to this:
+
+<P>
+<div class="verbatim"><pre>
+SnakeSQL Interactive Prompt
+Type SQL or "exit" to quit, "help", "copyright" or "license" for information.
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+It looks a bit like the Python prompt but this prompt only allows SQL queries.
+
+<P>
+
+<H2><A NAME="SECTION000530000000000000000">
+4.3 Using the Prompt</A>
+</H2>
+
+<P>
+Try selecting some information form the table <code>testTable</code>:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; SELECT * FROM testTable
+Error: Table 'testTable' not found.
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+Unsurprisingly, this gives an error message since we haven't yet created a table. All the supported commands, including creating a table will be demonstrated in the section SQL Reference.
+
+<P>
+If you are new to SQL you should read the SQL Reference and test the examples using the interactive prompt.
+
+<P>
+One last thing. To exit the Interactive Prompt type <code>exit</code> and press Enter:
+<div class="verbatim"><pre>
+&gt;&gt;&gt; exit
+
+C:\Documents and Settings\James\Desktop\SnakeSQL\scripts&gt;
+</pre></div>
+
+<P>
+You will be returned to the usual command prompt.
+
+<P>
+
+<H1><A NAME="SECTION000600000000000000000">
+5 Using SnakeSQL as a DB-API 2.0 Database</A>
+</H1>
+
+<P>
+Although the ability to use SnakeSQL from the interactive prompt is extremely useful for debugging or remotely administering databases, SnakeSQL is designed to be used from within Python code.
+
+<P>
+
+<H2><A NAME="SECTION000610000000000000000">
+5.1 Connecting to a Database and Obtaining a Cursor</A>
+</H2>
+
+<P>
+Connecting to a database is really very easy. First import SnakeSQL:
+
+<P>
+<div class="verbatim"><pre>
+import SnakeSQL
+</pre></div>
+
+<P>
+To create a new database named <code>test</code> you would use the following code:
+
+<P>
+<div class="verbatim"><pre>
+connection = SnakeSQL.connect(database='test', autoCreate=True)
+</pre></div>
+
+<P>
+This creates the directory <span class="file">test</span> to store the database tables in the directory of the script.
+
+<P>
+The code below will connect to an existing database named <code>test</code>:
+
+<P>
+<div class="verbatim"><pre>
+connection = SnakeSQL.connect(database='test')
+</pre></div>
+
+<P>
+If you wanted to store the database as CSV files rather than the faster and better tested binary DBM format you could create a new like this:
+
+<P>
+<div class="verbatim"><pre>
+connection = SnakeSQL.connect(database='test', driver='csv', autoCreate=True)
+</pre></div>
+
+<P>
+<span class="warning"><b class="label">Warning:</b>
+You cannot create a database in one format and expect to be able to connect to it using a driver for a different format. There is currently no way of converting between formats. You can't make two connections to the same database either. Only one connection is allowed at once although SnakeSQL manages things so that if two different programs try to connect to the same database at once the second program will waits for the first to finish.</span>
+
+<P>
+Below is a description of the full range of parameters:
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-1"><tt class="function">connect</tt></a></b>(</nobr></td>
+  <td><var><var>database,</var></var><big>[</big><var>driver='dbm',</var><big>]</big><big>[</big><var>autoCreate=False</var><big>]</big>)</td></tr></table>
+<dd>
+<DL>
+<DT><STRONG><var>database</var></STRONG></DT>
+<DD>The database name to connect to. (Also the name of the directory containing the tables).
+</DD>
+<DT><STRONG><var>driver</var></STRONG></DT>
+<DD>The driver to use to serialise the database information to disk. The default is the fast binary DBM driver. Alternatively you could use the CSV format by specifying <var>driver='csv'</var>.
+</DD>
+<DT><STRONG><var>autoCreate</var></STRONG></DT>
+<DD>Whether to automatically create a new database if one doesn't already exist. Can be <code>True</code> or <code>False</code>. If not specified the default is <code>autoCreate=False</code>.
+</DD>
+</DL>
+</dl>
+
+<P>
+<span class="warning"><b class="label">Warning:</b>
+You should not rely on the positions of the parameters in the constructor staying the same in future versions. All parameters should be referenced in the <var>name=value</var> way.</span> 
+
+<P>
+Once you have connected to the database you will need a <code>Cursor</code> object with which to manipulate the database. We can easily create a cursor by calling the <code>connection</code>'s <tt class="method">cursor()</tt> method.
+
+<P>
+<div class="verbatim"><pre>
+cursor = connection.cursor()
+</pre></div>
+
+<P>
+Cursor stands for a "CURrent Set Of Results". Some databases benefit from separating certain functions into a connection object and a cursor object. SnakeSQL doesn't but does things in this way to be compliant with version 2.0 of the Python DB-API.
+
+<P>
+The next sections show you how to use the <code>cursor</code>.
+
+<P>
+
+<H2><A NAME="SECTION000620000000000000000">
+5.2 Executing SQL</A>
+</H2>
+
+<P>
+The <tt class="method">execute()</tt> method is used to retrieve information from a database and looks like this:
+
+<P>
+<div class="verbatim"><pre>
+cursor.execute("SELECT * FROM Test")
+</pre></div>
+
+<P>
+or 
+
+<P>
+<div class="verbatim"><pre>
+cursor.execute("INSERT INTO Test (dateColumn, numberColumn) VALUES ('2004-11-8', 4)")
+</pre></div>
+
+<P>
+SnakeSQL uses <code>?</code> style parameter substitution. This means the <tt class="method">execute()</tt> method can take a list of values to substitute for any unquoted <code>?</code> symbols in the SQL string.
+
+<P>
+<div class="verbatim"><pre>
+values = [datetime.date(2004,11,8), 4]
+cursor.execute("INSERT INTO Test (dateColumn, numberColumn) VALUES (?, ?)", values)
+</pre></div>
+
+<P>
+or 
+
+<P>
+<div class="verbatim"><pre>
+cursor.execute(
+   "UPDATE Test SET dateColumn=?, numberColumn=? WHERE stringColumn=?",
+   [datetime.date(2004,11,8), 4, "where string"]
+)
+</pre></div>
+
+<P>
+At first sight the parameter substitution doesn't seem to offer much of an advantage but in fact it is extremely useful because SnakeSQL will automatically convert the values to SQL for you so that you don't need to convert them yourself. 
+
+<P>
+<span class="note"><b class="label">Note:</b>
+Parameter substitution can be done for any value which needs conversion. This includes default values in <code>CREATE</code> statements and values in <code>INSERT</code> and <code>UPDATE</code> statements or <code>WHERE</code> clauses. Parameter substitutions are <b>not</b> available for strings which do not need conversions such as table names, column names etc.</span>
+
+<P>
+The module also supports <tt class="method">executemany()</tt>. This method does the same as <tt class="method">execute()</tt> except it executes once for each sequence in the values parameter. For example:
+
+<P>
+<div class="verbatim"><pre>
+cursor.executemany(
+   "UPDATE Test SET dateColumn=?, numberColumn=? WHERE stringColumn=?",
+    [
+       [datetime.date(2004,11,8), 4, "string1"],
+       [datetime.date(2004,11,8), 5, "string2"],
+       [datetime.date(2004,11,8), 6, "string3"],
+    ]
+)
+</pre></div>
+
+<P>
+In SnakeSQL this is no more efficient than executing a number of normal <tt class="method">cursor.execute()</tt> methods.
+
+<P>
+<span class="note"><b class="label">Note:</b>
+None of you queries will be saved permanently to the database until you call <code>connection.commit()</code> to commit your changes. See later.</span>
+
+<P>
+
+<H2><A NAME="SECTION000630000000000000000">
+5.3 Retrieving Results</A>
+</H2>
+
+<P>
+Once you have executed a SELECT statement you will want to retrieve the results. This is done using the <tt class="method">cursor.fetchall()</tt> method:
+
+<P>
+<div class="verbatim"><pre>
+cursor.execute("SELECT * FROM Test")
+results = cursor.fetchall()
+</pre></div>
+
+<P>
+The <code>results</code> variable will always contain a tuple of tuples of fields. If the query matched no rows, result will be <code>((),)</code>. If it matched one row it will be in the form <code>((col1, col2, col3, etc),)</code>. If it matched more than one it will be in the form <code>((col1, col2, col3, etc), (col1, col2, col3, etc), etc )</code>
+
+<P>
+You can print the results like this:
+
+<P>
+<div class="verbatim"><pre>
+for row in cursor.fetchall():
+    print "New Row"
+    for field in row:
+        print field
+</pre></div>
+
+<P>
+The <tt class="method">cursor.fetchall()</tt> method will return the same results until another SQL query is executed using <tt class="method">cursor.execute()</tt>.
+
+<P>
+<span class="note"><b class="label">Note:</b>
+The cursor also supports <tt class="method">cursor.fetchone()</tt> and <tt class="method">cursor.fetchmany(<var>size</var>)</tt> methods but it is currently just as efficient to use <tt class="method">cursor.fetchall()</tt></span>
+
+<P>
+
+<H2><A NAME="SECTION000640000000000000000">
+5.4 Transactions, Rollbacks and Committing Changes</A>
+</H2>
+
+<P>
+SnakeSQL supports basic transactions. This means that you can make a number of changes to the database but if your program crashes your changes will not be saved so that the database is not left in an unstable state where you have updated some tables but not others.
+
+<P>
+Changes are only saved (or committed) to the database when you call the <code>connection</code> object's <tt class="method">commit()</tt> method:
+
+<P>
+<div class="verbatim"><pre>
+connection.commit()
+</pre></div>
+
+<P>
+If you have made a mistake and want to lose all the changes you have made, you can rollback the database to its previous state using the <code>connection</code> object's <tt class="method">rollback()</tt> method:
+
+<P>
+<div class="verbatim"><pre>
+connection.rollback()
+</pre></div>
+
+<P>
+Finally, if you have finished using a connection you can close it using the <code>connection</code> object's <tt class="method">close()</tt> method. This will also rollback the database to the time you last committed your changes so if you want to save your changes you should call <tt class="method">commit()</tt> first.
+
+<P>
+<div class="verbatim"><pre>
+connection.commit()
+connection.close()
+</pre></div>
+
+<P>
+<span class="note"><b class="label">Note:</b>
+Please note that making these changes to the <code>connection</code> object will automatically affect all <code>cursor</code> objects of that connection as well since they all share the same connection object.</span>
+
+<P>
+
+<H1><A NAME="SECTION000700000000000000000">
+6 Special Characters</A>
+</H1>
+
+<P>
+This section describes how to deal with special characters in Python and SnakeSQL. 
+
+<P>
+
+<H2><A NAME="SECTION000710000000000000000">
+6.1 In Python</A>
+</H2>
+
+<P>
+Within a Python string, certain sequences have special meaning. Each of these sequences begins with a backslash <code>&#92;</code>, known as the escape character. The values (and different escape methods) allowed in string literals are described in the Python documentation at <a class="url" href="http://www.python.org/doc/current/ref/strings.html">http://www.python.org/doc/current/ref/strings.html</a>. This is a brief summary.
+
+<P>
+Python recognizes the following escape sequences:
+<div class="verbatim"><pre>
+\\  	Backslash (\)  	
+\' 	Single quote (') 	
+\" 	Double quote (") 	
+\a 	ASCII Bell (BEL) 	
+\b 	ASCII Backspace (BS) 	
+\f 	ASCII Formfeed (FF) 	
+\n 	ASCII Linefeed (LF) 	
+\N{name} 	Character named name in the Unicode database (Unicode only) 	
+\r 	ASCII Carriage Return (CR) 	
+\t 	ASCII Horizontal Tab (TAB) 	
+\uxxxx 	Character with 16-bit hex value xxxx (Unicode only)
+\Uxxxxxxxx 	Character with 32-bit hex value xxxxxxxx (Unicode only)
+\v 	ASCII Vertical Tab (VT) 	
+\ooo 	Character with octal value ooo 
+\xhh 	Character with hex value hh
+</pre></div>
+These sequences are case sensitive. For example, <code>&#92;b</code> is interpreted as a backspace, but <code>&#92;B</code> is not. 
+
+<P>
+You can use these characters in SQL exactly the same way as you would in Python. For example <code>'end of one line&#92;nstart of new line'</code> is a valid SQL string containing a line break in the middle and could be used like this:
+
+<P>
+<div class="verbatim"><pre>
+cursor.execute("INSERT INTO table (columnOne) VALUES ('end of one line\nstart of new line')")
+</pre></div>
+
+<P>
+There is one important point to note about how Python (and hence SnakeSQL) deals with these escape characters. If a string contains a backslash <code>&#92;</code> but the character after the backslash is not a character which can be escaped then the single backslash is treated as a single backslash. If the character can be used in an escape sequence then the backslash is treated as an escape character and the character is escaped.
+
+<P>
+<span class="note"><b class="label">Note:</b>
+All examples in this section are from the Python prompt not the SnakeSQL one.</span>
+
+<P>
+For example:
+
+<P>
+<div class="verbatim"><pre>
+Python 2.4 (#60, Nov 30 2004, 11:49:19) [MSC v.1310 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt; print 'hello\%world'
+hello\%world
+&gt;&gt;&gt; print 'hello\nworld'
+hello
+world
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+If a string contains both escaped and non-escaped characters Python guesses which are backslashes and which are escape characters:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; print 'hello\nworld\%again'
+hello
+world\%again
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+If a string contains a double backslash <code>&#92;&#92;</code> it is always treated as an escaped backslash character and printed as <code>&#92;</code>. 
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; print '\\%'
+\%
+&gt;&gt;&gt; print '\%'
+\%
+</pre></div>
+
+<P>
+This means that the following expression is True:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; print '\\%' == '\%'
+True
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+But the following is not:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; print '\\\\%' == '\\%'
+False
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+When writing Python strings you have to be very careful how the backslash character is being used and then you will have no problems.
+
+<P>
+
+<H2><A NAME="SECTION000720000000000000000">
+6.2 Interactive Prompt</A>
+</H2>
+
+<P>
+The Interactive Prompt obeys the same special character rules as Python and SQL described above. One point which could cause confusion is the way the Interactive Prompt displays strings. If strings can be easily displayed they are. Otherwise the <code>repr()</code> function is used on them to explicitly display all their escape characters. This means all genuine backslashes appear double quoted.
+
+<P>
+<div class="verbatim"><pre>
+Python 2.4 (#60, Nov 30 2004, 11:49:19) [MSC v.1310 32 bit (Intel)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+&gt;&gt;&gt; print repr('hello\nworld\%once\\more')
+'hello\nworld\\%once\\more'
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000730000000000000000">
+6.3 In SQL</A>
+</H2>
+
+<P>
+In SQL all strings must be properly quoted using single quotes. To insert a string like <code>James</code> into the database, we use the SQL <code>'James'</code> but what if we want to insert the string <code>tail's</code>? Because it has a <code>'</code> character in it we can't simply do <code>'tail's'</code> as the SQL parser won't know which <code>'</code> ends the string. Instead we use <code>'tail''s'</code>. Double single quotes (<code>''</code>) in SQL mean a <code>'</code> character. 
+
+<P>
+The single quote character <code>'</code> is the only character which needs special treatment in SQL all the others like <code>&#92;n</code> behave exactly as they do in Python as described above. 
+
+<P>
+For example:
+
+<P>
+<div class="verbatim"><pre>
+cursor.execute("INSERT INTO table (columnOne) VALUES ('James''s')")
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000740000000000000000">
+6.4 The Easy Way</A>
+</H2>
+
+<P>
+If you are using the advanced cursor methods like <code>cursor.insert()</code> or <code>cursor.update()</code> (described later) or parameter substitution (described earlier), the easiest way to deal with special characters is to do nothing with them at all. The methods will automatically handle the conversions for you.
+
+<P>
+For example:
+
+<P>
+<div class="verbatim"><pre>
+cursor.insert(
+    table='table',
+    columns=['columnOne'],
+    values=["James's"],
+)
+</pre></div>
+
+<P>
+or 
+
+<P>
+<div class="verbatim"><pre>
+cursor.execute("INSERT INTO table (columnOne) VALUES (?)", "James's")
+</pre></div>
+
+<P>
+If you want explicitly want to use the cursor methods like <code>cursor.insert()</code> or <code>cursor.update()</code> but with quoted SQL strings rather than having the conversions done automatically you can do so like this:
+
+<P>
+<div class="verbatim"><pre>
+cursor.insert(
+    table='table',
+    columns=['columnOne'],
+    sqlValues=["'James''s'"],
+)
+</pre></div>
+
+<P>
+
+<H1><A NAME="SECTION000800000000000000000">
+7 SQL Reference</A>
+</H1>
+
+<P>
+This section teaches you all the supported SQL commands. There is an excellent SQL tutorial at <a class="url" href="http://www.w3schools.com/sql">http://www.w3schools.com/sql</a> on which the specification for SnakeSQL is based.
+
+<P>
+
+<H2><A NAME="SECTION000810000000000000000">
+7.1 What is SQL?</A>
+</H2>
+
+<P>
+
+<UL>
+<LI>SQL stands for Structured Query Language
+</LI>
+<LI>SQL allows you to access a database
+</LI>
+<LI>SQL is an ANSI standard computer language
+</LI>
+<LI>SQL can execute queries against a database
+</LI>
+<LI>SQL can retrieve data from a database
+</LI>
+<LI>SQL can insert new records in a database
+</LI>
+<LI>SQL can delete records from a database
+</LI>
+<LI>SQL can update records in a database
+</LI>
+<LI>SQL is easy to learn
+</LI>
+</UL>
+
+<P>
+SQL is an ANSI (American National Standards Institute) standard computer language for accessing and manipulating database systems. SQL statements are used to retrieve and update data in a database. 
+
+<P>
+Unfortunately, there are many different versions of the SQL language, but to be in compliance with the ANSI standard, they must support the same major keywords in a similar manner (such as SELECT, UPDATE, DELETE, INSERT, WHERE, and others). 
+
+<P>
+<span class="note"><b class="label">Note:</b>
+Most of the SQL database programs also have their own proprietary extensions in addition to the SQL standard and some of them implement different keywords in different ways. SnakeSQL try's to use the most standard SQL syntax.</span>
+
+<P>
+<div class="seealso">
+  <p class="heading"><b>See Also:</b></p>
+
+  <dl compact class="seetitle">
+    <dt><em class="citetitle"><a href="http://www.pythonweb.org/projects/webmodules/"
+        >Python Web Modules</a></em>
+    <dd>The Python Web Modules come with two database layers which hide the variations between different SQL implementations. The <tt class="module">web.database</tt> module provides functions for building SQL statements in the correct way for the underlying database and the <tt class="module">web.database.object</tt> module lets you treat an SQL database like a Python dictionary with no need to understand SQL at all.
+  </dl>
+</div>
+
+<P>
+
+<H4><A NAME="SECTION000810100000000000000">
+7.1.0.1 Database Tables</A>
+</H4>
+
+<P>
+A database most often contains one or more tables. Each table is identified by a name (e.g. <code>Customers</code> or <code>Orders</code>). Tables contain records (rows) with data.
+
+<P>
+Below is an example of a table called <code>Person</code>:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | John      | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+The table above contains two records (one for each person) and four columns (LastName, FirstName, Address, and DateOfBirth).
+
+<P>
+
+<H4><A NAME="SECTION000810200000000000000">
+7.1.0.2 Queries</A>
+</H4>
+
+<P>
+With SQL, we can query a database and have a result set returned.
+
+<P>
+A query looks like this:
+
+<P>
+<div class="verbatim"><pre>
+SELECT LastName FROM Person
+</pre></div>
+
+<P>
+Gives a result set like this:
+<div class="verbatim"><pre>
++----------+
+| LastName |
++----------+
+| Smith    |
++----------+
+| Doe      |
++----------+
+</pre></div>
+
+<P>
+<span class="note"><b class="label">Note:</b>
+Some database systems require a semicolon at the end of the SQL statement. SnakeSQL does not.</span>
+
+<P>
+
+<H2><A NAME="SECTION000820000000000000000">
+7.2 The SELECT Statement</A>
+</H2>
+
+<P>
+The SELECT statement is used to select data from a table. The tabular result is stored in a result table (called the result-set).
+
+<P>
+<div class="verbatim"><pre>
+SELECT column_name(s) FROM table_name
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION000820100000000000000">
+7.2.0.1 Select Some Columns</A>
+</H4>
+
+<P>
+To select the columns named <code>LastName</code> and <code>FirstName</code>, use a SELECT statement like this:
+
+<P>
+SELECT LastName, FirstName FROM Person
+
+<P>
+Table Person:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | John      | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+Result Set:
+<div class="verbatim"><pre>
++----------+-----------+
+| LastName | FirstName |
++----------+-----------+
+| Smith    | John      |
++----------+-----------+
+| Doe      | John      |
++----------+-----------+
+</pre></div>
+
+<P>
+The order of the columns in the result is the same as the order of the columns in the query.
+
+<P>
+
+<H4><A NAME="SECTION000820200000000000000">
+7.2.0.2 Select All Columns</A>
+</H4>
+
+<P>
+To select all columns from the <code>Person</code> table, use a <code>*</code> symbol instead of column names, like this: 
+
+<P>
+<div class="verbatim"><pre>
+SELECT * FROM Person
+</pre></div>
+
+<P>
+Result Set:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | John      | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION000820300000000000000">
+7.2.0.3 Testing the SELECT Statement</A>
+</H4>
+
+<P>
+The best way to learn SQL is to experiment. If you haven't done already you should read the section on using the Interactive Prompt. This will enable you to try out all the examples coming up. If you have read that section go ahead and create a database named <code>test</code>:
+
+<P>
+<div class="verbatim"><pre>
+&gt; python snake.py -c test
+</pre></div>
+
+<P>
+You will also need to have some data to play with so at the prompt type the following information (it is usually easiest to copy and paste).
+
+<P>
+<code>CREATE TABLE Person (LastName String required, FirstName string, Number Integer, DateOfBirth Date)</code>
+<code>INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Smith', 'John', 10, '1980-01-01')</code>
+<code>INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Doe','John', 3, '1981-12-25')</code>
+
+<P>
+You should see the following:
+
+<P>
+<div class="verbatim"><pre>
+SnakeSQL Interactive Prompt
+Type SQL or "exit" to quit, "help", "copyright" or "license" for information.
+&gt;&gt;&gt; CREATE TABLE Person (LastName String required, FirstName string, Number Inte
+ger, DateOfBirth Date)
+Query OK, 0 rows affected (0.01 sec)
+
+&gt;&gt;&gt; INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Smith
+', 'John', 10, '1980-01-01')
+Query OK, 1 row affected (0.02 sec)
+
+&gt;&gt;&gt; INSERT INTO Person (LastName, FirstName, Number, DateOfBirth) VALUES ('Doe',
+ 'John', 3, '1981-12-25')
+Query OK, 1 row affected (0.01 sec)
+
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+<span class="note"><b class="label">Note:</b>
+There shouldn't be any carriage returns when you write the SQL at the prompt. The SQL will automatically wrap to the next line as shown in the examples.</span>
+
+<P>
+The table will now be the same as in the above examples. You can test the select statement:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; select * from Person
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+2 rows in set (0.01 sec)
+
+&gt;&gt;&gt;
+</pre></div>
+
+<P>
+Feel free to experiment with the select statement.
+
+<P>
+
+<H2><A NAME="SECTION000830000000000000000">
+7.3 The WHERE Clause</A>
+</H2>
+
+<P>
+The WHERE clause is used to specify a selection criterion.
+
+<P>
+The syntax of the where clause is:
+<div class="verbatim"><pre>
+SELECT column FROM table WHERE column operator value
+</pre></div>
+
+<P>
+With the WHERE clause, the following operators can be used:
+
+<P>
+<div class="verbatim"><pre>
+Operator    Description
+--------    -----------
+=           Equal
+&lt;&gt;          Not equal
+&gt;           Greater than
+&lt;           Less than
+&gt;=          Greater than or equal
+&lt;=          Less than or equal
+LIKE        Pattern match (described later)
+</pre></div>
+
+<P>
+<span class="note"><b class="label">Note:</b>
+In some versions of SQL the <code>&lt;&gt;</code> operator may be written as <code>!=</code> but not in SnakeSQL. Note that the equals operator in SQL is <code>=</code> not <code>==</code> as it is in Python.</span>
+
+<P>
+
+<H3><A NAME="SECTION000831000000000000000">
+7.3.1 Using the WHERE Clause</A>
+</H3>
+
+<P>
+To select only the people whose last name are <code>Smith</code>, we add a WHERE clause to the SELECT statement:
+
+<P>
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE LastName='Smith'
+</pre></div>
+
+<P>
+Person table:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+Result set:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H3><A NAME="SECTION000832000000000000000">
+7.3.2 Using Quotes</A>
+</H3>
+
+<P>
+Note that we have used single quotes around the conditional values in the examples.
+
+<P>
+SQL uses single quotes around text values (some database systems will also accept double quotes, not SnakeSQL). Numeric values should not be enclosed in quotes.
+
+<P>
+For text values:
+
+<P>
+This is correct:
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE LastName='Smith'
+</pre></div>
+
+<P>
+This is wrong:
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE LastName=Smith
+</pre></div>
+
+<P>
+For numeric values:
+
+<P>
+This is correct:
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE Number&gt;10
+</pre></div>
+
+<P>
+This is wrong:
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE Number&gt;'10'
+</pre></div>
+
+<P>
+
+<H3><A NAME="SECTION000833000000000000000">
+7.3.3 The LIKE Condition</A>
+</H3>
+
+<P>
+The <code>LIKE</code> condition is used to specify a search for a pattern in a column.
+
+<P>
+<div class="verbatim"><pre>
+SELECT column FROM table WHERE column LIKE pattern
+</pre></div>
+
+<P>
+A <code>%</code> sign can be used to define wildcards (missing letters in the pattern).
+
+<P>
+The following SQL statement will return people with first names that start with an 'O':
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE FirstName LIKE 'O%'
+</pre></div>
+
+<P>
+The following SQL statement will return people with first names that end with an 'a':
+<div class="verbatim"><pre>
+SELECT column FROM table WHERE FirstName LIKE '%a'
+</pre></div>
+
+<P>
+The following SQL statement will return people with first names that contain the pattern 'la':
+<div class="verbatim"><pre>
+SELECT column FROM table WHERE FirstName LIKE '%la%'
+</pre></div>
+
+<P>
+You can use as many <code>%</code> characters as you need in the pattern to match zero or more characters. If you need to have an actual <code>%</code> characters in the pattern you will need to escape it like this <code>
+<BR>%</code>.
+
+<P>
+The following SQL statement will return values that end with a <code>%</code> character.
+
+<P>
+<div class="verbatim"><pre>
+SELECT column FROM table WHERE Percentage LIKE '%\%'
+</pre></div>
+
+<P>
+Snake SQL does not support the <code>BETWEEN</code> condition since the same thing can be achieved using comparison operators.
+
+<P>
+
+<H2><A NAME="SECTION000840000000000000000">
+7.4 The INSERT INTO Statement</A>
+</H2>
+
+<P>
+The INSERT INTO statement is used to insert new rows into a table.
+
+<P>
+Syntax
+<div class="verbatim"><pre>
+INSERT INTO table_name (column1, column2,...) VALUES (value1, value2,....)
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION000840100000000000000">
+7.4.0.1 Insert a New Row</A>
+</H4>
+
+<P>
+This Person table:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+And this SQL statement:
+<div class="verbatim"><pre>
+INSERT INTO Person (LastName, FirstName, Number, DateOfBirth)
+VALUES ('Blair', 'Tony', 8, '1953-05-06')
+</pre></div>
+
+<P>
+<span class="note"><b class="label">Note:</b>
+SnakeSQL expects the SQL to all be on one line. The line break here is for formatting</span>
+
+<P>
+Will give this result:
+
+<P>
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
+| 'Blair'  | 'Tony'    | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000850000000000000000">
+7.5 The UPDATE Statement</A>
+</H2>
+
+<P>
+The UPDATE statement is used to modify the data in a table.
+
+<P>
+Syntax:
+<div class="verbatim"><pre>
+UPDATE table_name SET column_name = new_value WHERE column_name = some_value
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION000850100000000000000">
+7.5.0.1 Update one Column in a Row</A>
+</H4>
+
+<P>
+Person table
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
+| 'Blair'  | 'Tony'    | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+We want to add a change Tony Blair's first name to <code>James</code>:
+
+<P>
+<div class="verbatim"><pre>
+UPDATE Person SET FirstName = 'James' WHERE LastName = 'Blair'
+</pre></div>
+
+<P>
+Person table
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 10     | 1980-01-01  |
+| 'Doe'    | 'John'    | 3      | 1981-12-25  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION000850200000000000000">
+7.5.0.2 Update several Columns in a Row</A>
+</H4>
+
+<P>
+We want to change the number of everyone with a FirstName <code>John</code> and make their DateOfBirth all <code>1980-01-01</code>:
+
+<P>
+<div class="verbatim"><pre>
+UPDATE Person SET Number = 1, DateOfBirth = '1980-01-01' WHERE FirstName = 'John'
+</pre></div>
+Result:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000860000000000000000">
+7.6 The DELETE Statement</A>
+</H2>
+
+<P>
+The DELETE statement is used to delete rows in a table.
+
+<P>
+Syntax
+<div class="verbatim"><pre>
+DELETE FROM table_name
+WHERE column_name = some_value
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION000860100000000000000">
+7.6.0.1 Delete a Row</A>
+</H4>
+
+<P>
+Person:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+<code>John Doe</code> is going to be deleted:
+
+<P>
+<div class="verbatim"><pre>
+DELETE FROM Person WHERE LastName = 'Doe'
+</pre></div>
+
+<P>
+Result
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION000860200000000000000">
+7.6.0.2 Delete All Rows</A>
+</H4>
+
+<P>
+It is possible to delete all rows in a table without deleting the table. This means that the table structure and attributes will be intact:
+
+<P>
+<div class="verbatim"><pre>
+DELETE FROM table_name
+</pre></div>
+
+<P>
+Result
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000870000000000000000">
+7.7 ORDER BY</A>
+</H2>
+
+<P>
+The ORDER BY keyword is used to sort the result.
+
+<P>
+
+<H4><A NAME="SECTION000870100000000000000">
+7.7.0.1 Sort the Rows</A>
+</H4>
+
+<P>
+The ORDER BY clause is used to sort the rows.
+
+<P>
+Orders:
+<div class="verbatim"><pre>
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 1234        |
+| 'Tesco'     | 2345        |
+| 'Morrisons' | 7654        |
++-------------+-------------+
+</pre></div>
+
+<P>
+To display the companies in alphabetical order:
+<div class="verbatim"><pre>
+SELECT Company, OrderNumber FROM Orders ORDER BY Company
+</pre></div>
+
+<P>
+Result:
+<div class="verbatim"><pre>
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 1234        |
+| 'Morrisons' | 7654        |
+| 'Tesco'     | 2345        |
++-------------+-------------+
+</pre></div>
+
+<P>
+<b>Example</b>
+
+<P>
+To display the companies in alphabetical order AND the order numbers in numerical order:
+<div class="verbatim"><pre>
+SELECT Company, OrderNumber FROM Orders ORDER BY Company, OrderNumber
+</pre></div>
+
+<P>
+Result:
+<div class="verbatim"><pre>
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 1234        |
+| 'Morrisons' | 7654        |
+| 'Tesco'     | 2345        |
++-------------+-------------+
+</pre></div>
+
+<P>
+<b>Example</b>
+
+<P>
+To display the companies in reverse alphabetical order:
+
+<P>
+<div class="verbatim"><pre>
+SELECT Company, OrderNumber FROM Orders ORDER BY Company DESC
+</pre></div>
+
+<P>
+Result:
+<div class="verbatim"><pre>
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Tesco'     | 2345        |
+| 'Morrisons' | 1234        |
+| 'Morrisons' | 7654        |
+| 'Asda'      | 5678        |
++-------------+-------------+
+</pre></div>
+
+<P>
+<b>Example</b>
+
+<P>
+To display the companies in alphabetical order AND the order numbers in reverse numerical order:
+<div class="verbatim"><pre>
+SELECT Company, OrderNumber FROM Orders ORDER BY Company ASC, OrderNumber DESC
+</pre></div>
+
+<P>
+Result:
+<div class="verbatim"><pre>
++-------------+-------------+
+| Company     | OrderNumber |
++-------------+-------------+
+| 'Asda'      | 5678        |
+| 'Morrisons' | 7654        |
+| 'Morrisons' | 1234        |
+| 'Tesco'     | 2345        |
++-------------+-------------+
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000880000000000000000">
+7.8 AND &amp; OR</A>
+</H2>
+
+<P>
+AND and OR join two or more conditions in a WHERE clause.
+
+<P>
+The AND operator displays a row if ALL conditions listed are true. The OR operator displays a row if ANY of the conditions listed are true.
+
+<P>
+Original Table (used in the examples)
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+Use AND to display each person with the first name equal to <code>John</code>, and the last name equal to <code>Smith</code>:
+
+<P>
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE FirstName='John' AND LastName='Smith'
+</pre></div>
+
+<P>
+Result Set
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+Use OR to display each person with the first name equal to <code>James</code>, or the last name equal to <code>Smith</code>:
+
+<P>
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE FirstName='James' OR LastName='Smith'
+</pre></div>
+
+<P>
+Result Set
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+<b>Example</b>
+
+<P>
+You can also combine AND and OR use parentheses to form complex expressions:
+
+<P>
+<div class="verbatim"><pre>
+SELECT * FROM Person WHERE (FirstName='James' AND LastName='Smith') OR LastName='Blair'
+</pre></div>
+
+<P>
+Result Set
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION000890000000000000000">
+7.9 NULL Values</A>
+</H2>
+
+<P>
+An important feature of SnakeSQL is its ability to support <code>NULL</code> values. A field which contains a <code>NULL</code> value is simply a field where no value has been set or the value as been set to contain no value. This is quite different, for example, from a <code>String</code> field which has been set a value <code>''</code>, an empty string.
+
+<P>
+Original Table (used in the examples)
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'John'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+Our query
+<div class="verbatim"><pre>
+UPDATE Person SET FirstName=NULL WHERE LastName='Doe'
+</pre></div>
+
+<P>
+Our table now looks like this:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | NULL      | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+This is quite different from this query which simply sets the FirstName to the string <code>'NULL'</code> not the value <code>NULL</code>:
+<div class="verbatim"><pre>
+UPDATE Person SET FirstName='NULL' WHERE FirstName=NULL
+</pre></div>
+
+<P>
+Our table now looks like this:
+<div class="verbatim"><pre>
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| 'Smith'  | 'John'    | 1      | 1980-01-01  |
+| 'Doe'    | 'NULL'    | 1      | 1980-01-01  |
+| 'Blair'  | 'James'   | 8      | 1953-05-06  |
++----------+-----------+--------+-------------+
+</pre></div>
+
+<P>
+This is one of the reasons why it is important to use the correct quotations around values in you SQL.
+
+<P>
+<span class="note"><b class="label">Note:</b>
+Some SQL parsers consider <code>WHERE FirstName=NULL</code> to be incorrect because a field cannot be equal to nothing. Instead, they use <code>WHERE FirstName is NULL</code>. This seems too pedantic so SnakeSQL only supports the <code>WHERE FirstName=NULL</code> syntax.</span>
+
+<P>
+If you inserted a row into the table without specifying all the columns the columns you had not specified would contain the value <code>NULL</code> unless you had specified a DEFAULT value when you created the table.
+
+<P>
+
+<H2><A NAME="SECTION0008100000000000000000">
+7.10 CREATE</A>
+</H2>
+
+<P>
+To create a table in a database:
+
+<P>
+Syntax
+<div class="verbatim"><pre>
+CREATE TABLE table_name
+(
+column_name1 data_type options,
+column_name2 data_type options,
+.......
+)
+</pre></div>
+
+<P>
+<b>Example</b>
+
+<P>
+This example demonstrates how you can create a table named <code>Person</code>, with four columns. The column names will be <code>LastName</code>, <code>FirstName</code>, <code>Number</code>, and <code>DateOfBirth</code>:
+
+<P>
+<div class="verbatim"><pre>
+CREATE TABLE Person (LastName String, FirstName String, Number String, DateOfBirth Date)
+</pre></div>
+
+<P>
+The data_type specifies what type of data the column can hold. The table below contains the data types supported by SnakeSQL:
+
+<P>
+<table border align="center" style="border-collapse: collapse">
+  <thead>
+    <tr class="tableheader">
+      <th align="left"><b>Data Type</b>&nbsp;</th>
+      <th align="left"><b>Description</b>&nbsp;</th>
+      </tr>
+    </thead>
+  <tbody valign="baseline">
+    <tr><td align="left" valign="baseline"><code><code>Bool</code></code></td>
+        <td align="left">Either <code>True</code> or <code>False</code></td>
+    <tr><td align="left" valign="baseline"><code><code>String</code></code></td>
+        <td align="left">A string field taking strings values up to 255 characters</td>
+    <tr><td align="left" valign="baseline"><code><code>Text</code></code></td>
+        <td align="left">A text field for storing large amounts of text (up to 16k characters)</td>
+    <tr><td align="left" valign="baseline"><code><code>Integer</code></code></td>
+        <td align="left">An integer field taking any integer that is a valid Python integer (but <b>not</b> long)</td>
+    <tr><td align="left" valign="baseline"><code><code>Long</code></code></td>
+        <td align="left">Any valid Python long number</td>
+    <tr><td align="left" valign="baseline"><code><code>Float</code></code></td>
+        <td align="left">Any Python floating point number</td>
+    <tr><td align="left" valign="baseline"><code><code>Date</code></code></td>
+        <td align="left">A date field. Takes values in the form of python <tt class="module">datetime</tt> objects. Only stores days, months and years, any other information is truncated. Dates from <code>0001-01-01</code> to <code>9999-12-31</code>.</td>
+    <tr><td align="left" valign="baseline"><code><code>Time</code></code></td>
+        <td align="left">A time field. Takes values in the form of python <tt class="module">datetime</tt> objects. Only stores hours, minutes and seconds, any other information is truncated.</td>
+    <tr><td align="left" valign="baseline"><code><code>DateTime</code></code></td>
+        <td align="left">A datetime field. Takes values in the form of python <tt class="module">datetime</tt> objects. Only stores days, months, years, hours, minutes and seconds, any other information is truncated.</td></tbody>
+</table>
+
+<P>
+The options can be used to further specify what values the field can take. They are described in the next sections.
+
+<P>
+
+<H4><A NAME="SECTION0008100100000000000000">
+7.10.0.1 REQUIRED</A>
+</H4>
+
+<P>
+In SnakeSQL, <code>REQUIRED</code> simply means that the field cannot contain a <code>NULL</code> value. If you insert a row into a table with a REQUIRED field, you must specify a value for the field unless you have also specified the field to have a DEFAULT value which isn't <code>NULL</code> in which case the default value will be used. If you try to set the field to NULL an error will be raised.
+
+<P>
+To create a table with <code>LastName</code> and <code>FirstName</code> columns where <code>LastName</code> could not take a NULL value you would use:
+
+<P>
+<div class="verbatim"><pre>
+CREATE TABLE Person (LastName String REQUIRED, FirstName String)
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION0008100200000000000000">
+7.10.0.2 UNIQUE</A>
+</H4>
+
+<P>
+In SnakeSQL, a UNIQUE field is one in which all values in the table must be distinct. An error occurs if you try to add a new row with a key that matches an existing row. The exception to this is that if a column in the index is not specified as <code>REQUIRED</code>, i.e. it is allowed to contain NULL values, it can contain multiple NULL values.
+
+<P>
+A PRIMARY KEY is a unique KEY where all key columns must be defined as NOT NULL. If they are not explicitly declared as NOT NULL, MySQL will declare them so implicitly (and silently). A table can have only one PRIMARY KEY. If you don't have a PRIMARY KEY and an application asks for the PRIMARY KEY in your tables, MySQL returns the first UNIQUE index that has no NULL columns as the PRIMARY KEY.
+
+<P>
+To create a table with <code>LastName</code> and <code>FirstName</code> columns where all the values of <code>LastName</code> had to be different or <code>NULL</code> you would use:
+
+<P>
+<div class="verbatim"><pre>
+CREATE TABLE Person (LastName String UNIQUE, FirstName String)
+</pre></div>
+
+<P>
+If a field is specified as UNIQUE, SnakeSQL will not also let you specify a DEFAULT value.
+
+<P>
+
+<H4><A NAME="SECTION0008100300000000000000">
+7.10.0.3 PRIMARY KEY</A>
+</H4>
+
+<P>
+A PRIMARY KEY in SnakeSQL is a field which cannot be NULL, must be UNIQUE and does not take a DEFAULT value. Each table can only have one field as a PRIMARY KEY.
+
+<P>
+Primary keys can be used by SnakeSQL's drivers to speed up database queries. 
+
+<P>
+To create a table with <code>LastName</code> and <code>FirstName</code> columns where <code>LastName</code> is a primary key use:
+
+<P>
+<div class="verbatim"><pre>
+CREATE TABLE Person (LastName String PRIMARY KEY, FirstName String)
+</pre></div>
+
+<P>
+
+<H4><A NAME="SECTION0008100400000000000000">
+7.10.0.4 DEFAULT</A>
+</H4>
+
+<P>
+The DEFAULT option is used to specify a default value for a field to be used if a value isn't specified when a new row is added to a table.
+
+<P>
+To create a table with <code>LastName</code> and <code>FirstName</code> columns where the default value for <code>LastName</code> is 'Smith' we would use:
+
+<P>
+<div class="verbatim"><pre>
+CREATE TABLE Person (LastName String DEFAULT='Smith', FirstName String)
+</pre></div>
+
+<P>
+You cannot specify a DEFAULT if the column is a PRIMARY KEY or UNIQUE.
+
+<P>
+If no DEFAULT is specified the DEFAULT is <code>NULL</code>
+
+<H4><A NAME="SECTION0008100500000000000000">&nbsp;</A>
+<BR>
+7.10.0.5 FOREIGN KEY
+</H4>
+
+Tables in a database can be related to each other with keys. A primary key is a column with a unique value for each row. The purpose is to bind data together, across tables, without repeating all of the data in every table.
+
+In the <code>People</code> table below, the <code>LastName</code> column is the primary key, meaning that no two rows can have the same <code>LastName</code>. The <code>LastName</code> distinguishes two persons even if they have the same name.
+
+When you look at the example tables below, notice that:
+
+<UL>
+<LI>The <code>LastName</code> column is the primary key of the <code>People</code> table
+</LI>
+<LI>The <code>House</code> column is the primary key of the <code>Houses</code> table
+</LI>
+<LI>The <code>Owner</code> column in the <code>House</code> table is used to refer to the people in the <code>People</code> table. <code>Owner</code> is a foreign key field.
+</LI>
+</UL>
+
+<div class="verbatim"><pre>
+People
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | James     | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+
+Houses
++-------+-------+
+| House | Owner |
++-------+-------+
+| 1     | Smith |
++-------+-------+
+| 2     | Smith |
++-------+-------+
+| 3     | Doe   |
++-------+-------+
+</pre></div>
+
+People may own more than one house. In our example John Smith owns both House <code>1</code> and <code>2</code>. In order to keep the database consistent you would not want to remove <code>Smith</code> from the <code>People</code> table or drop the <code>People</code> table because the <code>Houses</code> table would still contain a reference to <code>Smith</code>. Similarly you wouldn't want to insert or update a value in the <code>Owner</code> column of the <code>Houses</code> table which didn't exist as a primary key for the <code>People</code> table.
+
+By specifying the <code>Owner</code> column of the <code>Houses</code> table as a foregin key these constraints are enforced by SnakeSQL.
+
+The SQL for the tables is below. <span class="note"><b class="label">Note:</b>
+The line breaks in the first <code>CREATE</code> statement are for formatting; SnakeSQL doesn't support line breaks in SQL.</span>
+
+<div class="verbatim"><pre>
+CREATE TABLE People (
+    LastName String PRIMARY KEY, FirstName String, 
+    Number Integer, DateOfBirth Date
+)
+CREATE TABLE Houses (House Integer, Owner String FOREIGN KEY=People)
+</pre></div>
+
+If a column is specified <code>FOREIGN KEY</code> it cannot have any other options. The table specified as providing the foreign key must have a primary key. It is the primary key value which is used as a foreign key in the other table.
+
+<P>
+
+<H2><A NAME="SECTION0008110000000000000000">
+7.11 DROP Table</A>
+</H2>
+<P>
+
+<H4><A NAME="SECTION0008110100000000000000">
+7.11.0.1 Delete a Table</A>
+</H4>
+
+<P>
+To delete a table (the table structure and attributes will also be deleted): 
+<P>
+<div class="verbatim"><pre>
+DROP TABLE table_name
+</pre></div>
+
+<span class="note"><b class="label">Note:</b>
+If you are using foreign key constraints you cannot drop a parent table if the child table still exists you should drop the child table first.</span>
+
+If you want to drop more than one table you can use this alternative syntax:
+
+<div class="verbatim"><pre>
+DROP TABLE table1, table2, table3
+</pre></div>
+
+<P>
+
+<H2><A NAME="SECTION0008120000000000000000">
+7.12 Joins</A>
+</H2>
+
+Sometimes we have to select data from two or more tables to make our result complete. We have to perform a join. Joins and the use of primary and foreign keys are inter-related. See the documentation on foreign keys in the <code>CREATE</code> statement section.
+
+<div class="verbatim"><pre>
+People
++----------+-----------+--------+-------------+
+| LastName | FirstName | Number | DateOfBirth |
++----------+-----------+--------+-------------+
+| Smith    | John      | 10     | 1980-01-01  |
++----------+-----------+--------+-------------+
+| Doe      | James     | 3      | 1981-12-25  |
++----------+-----------+--------+-------------+
+
+Houses
++-------+-------+
+| House | Owner |
++-------+-------+
+| 1     | Smith |
++-------+-------+
+| 2     | Smith |
++-------+-------+
+| 3     | Doe   |
++-------+-------+
+</pre></div>
+
+We can select data from two tables by referring to two tables, using the SQL below. <span class="note"><b class="label">Note:</b>
+The line breaks are just for formatting; SnakeSQL doesn't support line breaks in SQL.</span>
+
+<div class="verbatim"><pre>
+SELECT Houses.House, People.FirstName, Houses.Owner 
+FROM People, Houses 
+WHERE People.LastName=Houses.Owner
+</pre></div>
+
+Here is the result
+<div class="verbatim"><pre>
++--------------+------------------+--------------+
+| Houses.House | People.FirstName | Houses.Owner |
++--------------+------------------+--------------+
+| 1            | 'John'           | 'Smith'      |
+| 2            | 'John'           | 'Smith'      |
+| 3            | 'James'          | 'Doe'        |
++--------------+------------------+--------------+
+</pre></div>
+
+and another example:
+
+<div class="verbatim"><pre>
+SELECT Houses.House, People.FirstName, Houses.Owner 
+FROM People, Houses 
+WHERE People.LastName=Houses.Owner  and People.DateOfBirth&lt;'1981-01-01'
+</pre></div>
+
+Here is the result
+<div class="verbatim"><pre>
++--------------+------------------+--------------+
+| Houses.House | People.FirstName | Houses.Owner |
++--------------+------------------+--------------+
+| 1            | 'John'           | 'Smith'      |
+| 2            | 'John'           | 'Smith'      |
++--------------+------------------+--------------+
+</pre></div>
+
+<P>
+
+<H1><A NAME="SECTION000900000000000000000">
+8 Advanced Usage - Cursor Abstraction Methods</A>
+</H1>
+
+<P>
+As well as supporting the standard DB-API 2.0 SnakeSQL <code>cursor</code> objects also have a number of SQL methods to allow you to manipulate the database without using SQL strings. These methods build SQL strings which you can then execute.
+
+<P>
+For example, we can produce an SQL SELECT statement as follows:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; print cursor.select(
+...     tables=['tableName'],
+...     columns=[
+...         'columnOne',
+...         'columnTwo',
+...         'columnThree',
+...     ]
+... )
+...
+SELECT columnOne, columnTwo, columnThree FROM tableName
+</pre></div>
+
+<P>
+At first sight this looks more complicated than using the methods described earlier. When you are writing SQL code in Python you often already have the variables in the form required by these cursor methods and so it is actually easier to use these methods than putting together the parts into a string. 
+
+<P>
+
+<H2><A NAME="SECTION000910000000000000000">
+8.1 SQL Cursor Methods</A>
+</H2>
+
+<P>
+For the values <var>execute</var>, <var>format</var> and 
+These methods are used to build an SQL string and (optionally) to execute the result.
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-2"><tt class="method">select</tt></a></b>(</nobr></td>
+  <td><var><var>tables</var>, <var>columns</var>, </var><big>[</big><var>where=None, </var><big>]</big><big>[</big><var>order=None, </var><big>]</big><big>[</big><var>execute=None, </var><big>]</big><big>[</big><var>format=None, </var><big>]</big>)</td></tr></table>
+<dd>
+
+<P>
+Build an SQL string acording to to the options specified and optionally execute the SQL and return the results in the format specified. No error checking on field names if the SQL string is only being built. Strict error checking is only performed when executing the code.
+
+<P>
+<DL>
+<DT><STRONG><var>tables</var></STRONG></DT>
+<DD>A string containing the name of the table to select from or if selecting from multiple tables, a list or tuple of table names.
+</DD>
+<DT><STRONG><var>columns</var></STRONG></DT>
+<DD>A list or tuple of column names to select. Can be a string if only one column is being selected. If selecting from multiple tables, all column names should be in the form <code>'tableName.columnName'</code>
+</DD>
+<DT><STRONG><var>where</var></STRONG></DT>
+<DD>The WHERE clause as a SnakeSQL list as returned by <code>cursor.where()</code>. If <var>where</var> is a string it is converted to the correct format.
+</DD>
+<DT><STRONG><var>order</var></STRONG></DT>
+<DD>The ORDER BY clause as a SnakeSQL list as returned by <code>cursor.order()</code>. If <var>order</var> is a string it is converted to the correct format.
+</DD>
+<DT><STRONG><var>execute</var></STRONG></DT>
+<DD>If <code>False</code> the function returns the SQL string needed to perform the desired operations. If <code>True</code> the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is <code>True</code>
+</DD>
+<DT><STRONG><var>format</var></STRONG></DT>
+<DD>The format of the results returned. Can be <code>'dict'</code> to return them as a tuple of dictionary objects, <code>'tuple'</code> to return them as a tuple of tuples, <code>'object'</code> to return them as a tuple of dtuple objects which can be treated as a tuple or a dictionary or <code>'text'</code> to return tables designed to be displayed in a terminal 80 characters wide. If not specified takes the value specifed in the cursor which by default is <code>'tuple'</code>
+</DD>
+</DL>
+</dl>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-3"><tt class="method">insert</tt></a></b>(</nobr></td>
+  <td><var><var>table</var>, <var>columns</var>, <var>values</var>, <var>sqlValues</var>, </var><big>[</big><var>execute</var><big>]</big>)</td></tr></table>
+<dd>
+Insert values into the coulmns in table. Either <var>values</var> or <var>sqlValues</var> can be specified but not both.
+<DL>
+<DT><STRONG><var>table</var></STRONG></DT>
+<DD>The name of the table to insert into
+</DD>
+<DT><STRONG><var>columns</var></STRONG></DT>
+<DD>A list or tuple of column names in the same order as the values which are going to be inserted into those columns. Can be a string if only one column is going to have values inserted
+</DD>
+<DT><STRONG><var>values</var></STRONG></DT>
+<DD>A list or tuple of Python values to be inserted into the columns named in the <var>columns</var> variable. Can be the value rather than a list if there is only one value. If <var>values</var> is specified then <var>sqlValues</var> cannot be used.
+</DD>
+<DT><STRONG><var>sqlValues</var></STRONG></DT>
+<DD>A list or tuple of quoted SQL strings to be inserted into the columns named in the <var>columns</var> variable. Can be the value rather than a list if there is only one value. If <var>sqlValues</var> is specified then <var>values</var> cannot be used.
+</DD>
+<DT><STRONG><var>execute</var></STRONG></DT>
+<DD>If <code>False</code> the function returns the SQL string to perform the desired operations. If <code>True</code> the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is <code>True</code>
+</DD>
+</DL>
+</dl>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-4"><tt class="method">update</tt></a></b>(</nobr></td>
+  <td><var> <var>table</var>, <var>columns</var>, <var>values</var>, <var>sqlValues</var>, </var><big>[</big><var>, where</var><big>]</big><big>[</big><var>, execute</var><big>]</big>)</td></tr></table>
+<dd>
+Update the columns in table with the values. Either <var>values</var> or <var>sqlValues</var> can be specified but not both.
+<DL>
+<DT><STRONG><var>table</var></STRONG></DT>
+<DD>A string containing the name of the table to update
+</DD>
+<DT><STRONG><var>columns</var></STRONG></DT>
+<DD>A list or tuple of column names in the same order as the values which are going to be updated in those columns. Can be a string if only one column is going to have values inserted
+</DD>
+<DT><STRONG><var>values</var></STRONG></DT>
+<DD>A list or tuple of Python values to be updated in the order of the columns named in the <var>columns</var> variable. Can be the value rather than a list if there is only one value. If <var>values</var> is specified then <var>sqlValues</var> cannot be used.
+</DD>
+<DT><STRONG><var>sqlValues</var></STRONG></DT>
+<DD>A list or tuple of quoted SQL strings to be updated in the order of the columns named in the <var>columns</var> variable. Can be the value rather than a list if there is only one value. If <var>sqlValues</var> is specified then <var>values</var> cannot be used.
+</DD>
+<DT><STRONG><var>where</var></STRONG></DT>
+<DD>The WHERE clause as a SnakeSQL list as returned by <code>cursor.where()</code>. If <var>where</var> is a string it is converted to the correct format.
+</DD>
+<DT><STRONG><var>execute</var></STRONG></DT>
+<DD>If <code>False</code> the function returns the SQL string to perform the desired operations. If <code>True</code> the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is <code>True</code>
+</DD>
+</DL>
+</dl>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-5"><tt class="method">delete</tt></a></b>(</nobr></td>
+  <td><var> <var>table</var>, </var><big>[</big><var>where</var><big>]</big><big>[</big><var>, execute</var><big>]</big>)</td></tr></table>
+<dd>
+Delete records from the table according to where.
+<DL>
+<DT><STRONG><var>table</var></STRONG></DT>
+<DD>A string containing the name of the table to select from or if selecting from multiple tables, a list or tuple of table names.
+</DD>
+<DT><STRONG><var>where</var></STRONG></DT>
+<DD>The WHERE clause as a SnakeSQL list as returned by <code>cursor.where()</code>. If <var>where</var> is a string it is converted to the correct format.
+</DD>
+<DT><STRONG><var>execute</var></STRONG></DT>
+<DD>If <code>False</code> the function returns the SQL string to perform the desired operations. If <code>True</code> the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is <code>True</code>
+</DD>
+</DL>
+</dl>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-6"><tt class="method">create</tt></a></b>(</nobr></td>
+  <td><var> <var>table</var>, <var>columns</var> </var><big>[</big><var>, execute</var><big>]</big>)</td></tr></table>
+<dd>
+<P>
+Create table with fields specified by fields. fields is a tuple of field tuples which can be obtained as follows:
+<div class="verbatim"><pre>
+columns = [
+    cursor.column( field options... ),
+    cursor.column( field options... ),
+    cursor.column( field options... ),
+    cursor.column( field options... ),
+]
+</pre></div>
+<DL>
+<DT><STRONG><var>table</var></STRONG></DT>
+<DD>The table name as a string. 
+</DD>
+<DT><STRONG><var>columns</var></STRONG></DT>
+<DD>A tuple of field tuples returned by <code>cursor.column()</code>
+</DD>
+<DT><STRONG><var>execute</var></STRONG></DT>
+<DD>If <code>False</code> the function returns the SQL string to perform the desired operations. If <code>True</code> the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is <code>True</code>
+</DD>
+</DL>
+</dl>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-7"><tt class="method">drop</tt></a></b>(</nobr></td>
+  <td><var> <var>tables</var></var><big>[</big><var>, execute</var><big>]</big>)</td></tr></table>
+<dd>Remove a table
+<DL>
+<DT><STRONG><var>tables</var></STRONG></DT>
+<DD>A string containing the name of the table to drop or if dropping multiple tables, a list or tuple of table names.
+</DD>
+<DT><STRONG><var>execute</var></STRONG></DT>
+<DD>If <code>False</code> the function returns the SQL string to perform the desired operations. If <code>True</code> the SQL is executed and the results converted and returned in the appropriate form. If not specified takes the value specifed in the cursor which by default is <code>True</code>
+</DD>
+</DL>
+</dl>
+
+<P>
+
+<H2><A NAME="SECTION000920000000000000000">
+8.2 Helper Methods</A>
+</H2>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-8"><tt class="method">column</tt></a></b>(</nobr></td>
+  <td><var><var>name</var>, <var>type</var></var><big>[</big><var>, required=0</var><big>]</big><big>[</big><var>, unique=0</var><big>]</big><big>[</big><var>, key=0</var><big>]</big><big>[</big><var>, default=None</var><big>]</big>)</td></tr></table>
+<dd>
+Return a column tuple suitable for use in the columns tuple used in the <tt class="method">create()</tt> method
+<DL>
+<DT><STRONG><code>name</code></STRONG></DT>
+<DD>The name of the field as a string.
+</DD>
+<DT><STRONG><code>type</code></STRONG></DT>
+<DD>The fieldCode for the field. This can take one of the values: <code>'Char'</code>, <code>'String'</code>, <code>'Text'</code>, <code>'Integer'</code>, <code>'Float'</code>, <code>'Date'</code>, <code>'Time'</code>, <code>'DateTime'</code>
+</DD>
+<DT><STRONG><code>required</code></STRONG></DT>
+<DD>Whether or not the field is required. Setting to <code>True</code> means the field cannot have <code>NULL</code> values.
+</DD>
+<DT><STRONG><code>unique</code></STRONG></DT>
+<DD>Set to <code>True</code> if the value must be unique. Two fields in the column cannot have the same value unless that value is NULL
+</DD>
+<DT><STRONG><code>key</code></STRONG></DT>
+<DD>The field is to be used as a primary key, the field has the same behaviour as being unique and required but no default value can be set
+</DD>
+<DT><STRONG><code>default</code></STRONG></DT>
+<DD>The default value for the field to be set to. If not specified the default is NULL 
+</DD>
+</DL>
+</dl>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-9"><tt class="method">where</tt></a></b>(</nobr></td>
+  <td><var><var>where</var></var>)</td></tr></table>
+<dd>
+Return a parsed <code>WHERE</code> clause suitable for use in the <tt class="method">select()</tt>, <tt class="method">update()</tt> and <tt class="method">delete()</tt> methods of the <code>cursor</code> object.
+<DL>
+<DT><STRONG><var>where</var></STRONG></DT>
+<DD>A string containing the <code>WHERE</code> clause. <span class="note"><b class="label">Note:</b>
+ <var>where</var> should not include the string <code>'WHERE'</code> at the begining.</span>
+</DD>
+</DL>
+</dl>
+
+<P>
+<dl><dt><table cellpadding="0" cellspacing="0"><tr valign="baseline">
+  <td><nobr><b><a name="l2h-10"><tt class="method">order</tt></a></b>(</nobr></td>
+  <td><var><var>order</var></var>)</td></tr></table>
+<dd>
+Return a parsed <code>ORDER BY</code> clause suitable for use in the <tt class="method">select()</tt> method of the <code>cursor</code> object.
+<DL>
+<DT><STRONG><var>order</var></STRONG></DT>
+<DD>A string containing the <code>ORDER BY</code> clause. <span class="note"><b class="label">Note:</b>
+ <var>order</var> should not include the string <code>'ORDER BY'</code> at the begining.</span>
+</DD>
+</DL>
+</dl>
+
+<P>
+
+<H2><A NAME="SECTION000930000000000000000">
+8.3 Automatically Executing SQL</A>
+</H2>
+
+<P>
+If you want to execute the SQL as the cursor methods provide a parameter <var>execute</var>. If you specify this as <code>True</code> the SQL will be executed as shown below:
+
+<P>
+<div class="verbatim"><pre>
+&gt;&gt;&gt; print cursor.select(
+...     tables=['tableName'],
+...     columns=[
+...         'columnOne',
+...         'columnTwo',
+...         'columnThree',
+...     ],
+...     execute=True
+... )
+((1, 2, 3), (4, 5, 6),)
+</pre></div>
+
+<P>
+If you always want the cursor methods to execute you can specify <var>execute</var><code>=True</code> in the <tt class="method">cursor()</tt> method of the <code>connection</code> object as shown below:
+
+<P>
+<div class="verbatim"><pre>
+cursor = connection.cursor(execute=True)
+</pre></div>
+
+<P>
+All the methods <tt class="method">select()</tt>, <tt class="method">insert()</tt>, <tt class="method">update()</tt>, <tt class="method">delete()</tt>, <tt class="method">create()</tt>, <tt class="method">alter()</tt> and <tt class="method">drop()</tt> will automatically execute if you use the <code>cursor</code> in this mode. Also, using these methods is slightly faster since the SQL does not need to be parsed.
+
+<P>
+The full specification for the cursor functions can be found in the Module Reference section.
+
+<P>
+
+<H2><A NAME="SECTION000940000000000000000">
+8.4 Specifying the Results Format</A>
+</H2>
+
+<P>
+You can change the way the results are returned from the database by specifying the <var>format</var> parameter in the <code>cursor</code> object <tt class="method">fetch()</tt> methods or the <tt class="method">select()</tt> method. 
+
+<P>
+<var>format</var> can be:
+
+<P>
+<DL>
+<DT><STRONG><code>'tuple'</code></STRONG></DT>
+<DD>The results are returned as a tuple of tuples.
+</DD>
+<DT><STRONG><code>'dict'</code></STRONG></DT>
+<DD>The results are returned as a tuple of dictionaries. Each dictionary has the column name as the key and the value of the field as the value.
+</DD>
+<DT><STRONG><code>'object'</code></STRONG></DT>
+<DD>The results are returned as a tuple of <code>dtuple</code> objects. Each <code>dtuple</code> can be treated either as a tuple or a dictionary or the field value can be accessed as an attribute of the object. <span class="note"><b class="label">Note:</b>
+Certain field names will not work as attributes of the <code>dtuple</code> object since the field name maybe the same as an attribute name of the <code>dtuple</code> object</span>
+</DD>
+<DT><STRONG><code>'text'</code></STRONG></DT>
+<DD>The results are returned as a text format table designed to be displayed in a terminal of 80 characters width.
+</DD>
+</DL>
+
+<P>
+The default is <code>'tuple'</code> which is what fields are returned by a normal DB-API 2.0 database.
+
+<P>
+Creating a cursor as follows will set the default format for fetching results to be <code>'dict'</code>.
+<div class="verbatim"><pre>
+cursor = connection.cursor(format='dict')
+</pre></div>
+
+<P>
+
+<H1><A NAME="SECTION0001000000000000000000">
+9 Internal Workings</A>
+</H1>
+
+<P>
+<code>cursor</code> objects have an attribute named <code>.tables</code>. This is a dictionary of table name keys, each containing a <code>Table</code> object. Each table object contains information about the columns in the table which can be used to get properties or to conversion methods for those columns.
+
+<P>
+
+<H2><A NAME="SECTION0001010000000000000000">
+9.1 Table Objects</A>
+</H2>
+
+<P>
+Table objects store all the meta data there is to know about an SQL table. A simple Table class might look like this:
+<div class="verbatim"><pre>
+class Table:
+    def __init__(self, name, columns=[]):
+        self.name = name
+        self.columns = tuple(columns)
+        self.primaryKey = None
+        self.parentTables = []
+        self.childTables = []
+
+    def columnExists(self, columnName):
+        for column in self.columns:
+            if column.name == columnName:
+                return True
+        return False
+
+    def column(self, columnName):
+        for column in self.columns:
+            if column.name == columnName:
+                return column
+        raise DataError("Column %s not found."%(repr(columnName)))
+</pre></div>
+
+<P>
+Table objects must have the following two atrributes:
+
+<P>
+<DL>
+<DT><STRONG><code>name</code></STRONG></DT>
+<DD>The name of the table
+</DD>
+<DT><STRONG><code>columns</code></STRONG></DT>
+<DD>A tuple of Column objects in the order in which the columns are returned by a <code>SELECT * FROM table</code> statement
+</DD>
+</DL>
+
+<P>
+They should have the following methods:
+
+<P>
+<DL>
+<DT><STRONG><code>column(<var>name</var>)</code></STRONG></DT>
+<DD>Return the column named <var>name</var>
+</DD>
+<DT><STRONG><code>columnExists(<var>name</var>)</code></STRONG></DT>
+<DD>Return <code>True</code> if the table has a column named <var>name</var>, <code>False</code> otherwise
+</DD>
+</DL>
+
+<P>
+Table objects could also contain any other useful methods which the module implementer chooses.
+
+<P>
+
+<H2><A NAME="SECTION0001020000000000000000">
+9.2 Column Objects</A>
+</H2>
+
+<P>
+Column objects store all the meta data there is to know about a particular column. A simple columm class would look like this:
+<div class="verbatim"><pre>
+class Column:
+    def __init__(self, table, name, type, required, unique, key, default, converter, position):
+        self.name = name
+        self.type = type
+        self.table = table
+        self.required = required
+        self.unique = unique
+        self.key = key
+        self.default = default
+        self.converter = converter
+        self.position = position
+
+    def get(self, columnName):
+        for column in self.columns:
+            if column.name == columnName:
+                return column
+        raise DataError("Column %s not found."%(repr(columnName)))
+</pre></div>
+
+<P>
+Attributes
+<DL>
+<DT><STRONG><code>name</code></STRONG></DT>
+<DD>The name of the column
+</DD>
+<DT><STRONG><code>type</code></STRONG></DT>
+<DD>The capitalised string representing the column type
+</DD>
+<DT><STRONG><code>baseType</code></STRONG></DT>
+<DD>The capitalised string representing the column type of the base type
+</DD>
+<DT><STRONG><code>table</code></STRONG></DT>
+<DD>The table of which the column is a part
+</DD>
+<DT><STRONG><code>required</code></STRONG></DT>
+<DD>Can be <code>True</code> or <code>False</code> depending on whether the column value is required (ie cannot be NULL) or not
+</DD>
+<DT><STRONG><code>unique</code></STRONG></DT>
+<DD><code>True</code> if the field should be unique, <code>False</code> otherwise
+</DD>
+<DT><STRONG><code>key</code></STRONG></DT>
+<DD><code>True</code> if the field is a primary key, <code>False</code> otherwise
+</DD>
+<DT><STRONG><code>default</code></STRONG></DT>
+<DD>The default value of the field
+</DD>
+<DT><STRONG><code>converter</code></STRONG></DT>
+<DD>A reference to the converter for the field type
+</DD>
+<DT><STRONG><code>position</code></STRONG></DT>
+<DD>The position of the field in the tuple returned by <code>SELECT * FROM table</code>
+</DD>
+</DL>
+
+<P>
+
+<H2><A NAME="SECTION0001030000000000000000">
+9.3 More Information</A>
+</H2>
+
+<P>
+SnakeSQL is designed in a way to allow it to be easy to create custom field types or new drivers. This really needs a good few pages of explanation which I haven't had time to document yet. Please get in touch help@pythonweb.org if you plan to write such extensions.
+
+<P>
+
+<H1><A NAME="SECTION0001100000000000000000">
+10 Licence</A>
+</H1>
+
+<P>
+SnakeSQL is released under the GNU GPL.
+
+<P>
+<div class="verbatim">
+<pre>
+		    GNU GENERAL PUBLIC LICENSE
+		       Version 2, June 1991
+
+ Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+                       59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+			    Preamble
+
+  The licenses for most software are designed to take away your
+freedom to share and change it.  By contrast, the GNU General Public
+License is intended to guarantee your freedom to share and change free
+software-&#45;to make sure the software is free for all its users.  This
+General Public License applies to most of the Free Software
+Foundation's software and to any other program whose authors commit to
+using it.  (Some other Free Software Foundation software is covered by
+the GNU Library General Public License instead.)  You can apply it to
+your programs, too.
+
+  When we speak of free software, we are referring to freedom, not
+price.  Our General Public Licenses are designed to make sure that you
+have the freedom to distribute copies of free software (and charge for
+this service if you wish), that you receive source code or can get it
+if you want it, that you can change the software or use pieces of it
+in new free programs; and that you know you can do these things.
+
+  To protect your rights, we need to make restrictions that forbid
+anyone to deny you these rights or to ask you to surrender the rights.
+These restrictions translate to certain responsibilities for you if you
+distribute copies of the software, or if you modify it.
+
+  For example, if you distribute copies of such a program, whether
+gratis or for a fee, you must give the recipients all the rights that
+you have.  You must make sure that they, too, receive or can get the
+source code.  And you must show them these terms so they know their
+rights.
+
+  We protect your rights with two steps: (1) copyright the software, and
+(2) offer you this license which gives you legal permission to copy,
+distribute and/or modify the software.
+
+  Also, for each author's protection and ours, we want to make certain
+that everyone understands that there is no warranty for this free
+software.  If the software is modified by someone else and passed on, we
+want its recipients to know that what they have is not the original, so
+that any problems introduced by others will not reflect on the original
+authors' reputations.
+
+  Finally, any free program is threatened constantly by software
+patents.  We wish to avoid the danger that redistributors of a free
+program will individually obtain patent licenses, in effect making the
+program proprietary.  To prevent this, we have made it clear that any
+patent must be licensed for everyone's free use or not licensed at all.
+
+  The precise terms and conditions for copying, distribution and
+modification follow.
+
+		    GNU GENERAL PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  0. This License applies to any program or other work which contains
+a notice placed by the copyright holder saying it may be distributed
+under the terms of this General Public License.  The "Program", below,
+refers to any such program or work, and a "work based on the Program"
+means either the Program or any derivative work under copyright law:
+that is to say, a work containing the Program or a portion of it,
+either verbatim or with modifications and/or translated into another
+language.  (Hereinafter, translation is included without limitation in
+the term "modification".)  Each licensee is addressed as "you".
+
+Activities other than copying, distribution and modification are not
+covered by this License; they are outside its scope.  The act of
+running the Program is not restricted, and the output from the Program
+is covered only if its contents constitute a work based on the
+Program (independent of having been made by running the Program).
+Whether that is true depends on what the Program does.
+
+  1. You may copy and distribute verbatim copies of the Program's
+source code as you receive it, in any medium, provided that you
+conspicuously and appropriately publish on each copy an appropriate
+copyright notice and disclaimer of warranty; keep intact all the
+notices that refer to this License and to the absence of any warranty;
+and give any other recipients of the Program a copy of this License
+along with the Program.
+
+You may charge a fee for the physical act of transferring a copy, and
+you may at your option offer warranty protection in exchange for a fee.
+
+  2. You may modify your copy or copies of the Program or any portion
+of it, thus forming a work based on the Program, and copy and
+distribute such modifications or work under the terms of Section 1
+above, provided that you also meet all of these conditions:
+
+    a) You must cause the modified files to carry prominent notices
+    stating that you changed the files and the date of any change.
+
+    b) You must cause any work that you distribute or publish, that in
+    whole or in part contains or is derived from the Program or any
+    part thereof, to be licensed as a whole at no charge to all third
+    parties under the terms of this License.
+
+    c) If the modified program normally reads commands interactively
+    when run, you must cause it, when started running for such
+    interactive use in the most ordinary way, to print or display an
+    announcement including an appropriate copyright notice and a
+    notice that there is no warranty (or else, saying that you provide
+    a warranty) and that users may redistribute the program under
+    these conditions, and telling the user how to view a copy of this
+    License.  (Exception: if the Program itself is interactive but
+    does not normally print such an announcement, your work based on
+    the Program is not required to print an announcement.)
+
+These requirements apply to the modified work as a whole.  If
+identifiable sections of that work are not derived from the Program,
+and can be reasonably considered independent and separate works in
+themselves, then this License, and its terms, do not apply to those
+sections when you distribute them as separate works.  But when you
+distribute the same sections as part of a whole which is a work based
+on the Program, the distribution of the whole must be on the terms of
+this License, whose permissions for other licensees extend to the
+entire whole, and thus to each and every part regardless of who wrote it.
+
+Thus, it is not the intent of this section to claim rights or contest
+your rights to work written entirely by you; rather, the intent is to
+exercise the right to control the distribution of derivative or
+collective works based on the Program.
+
+In addition, mere aggregation of another work not based on the Program
+with the Program (or with a work based on the Program) on a volume of
+a storage or distribution medium does not bring the other work under
+the scope of this License.
+
+  3. You may copy and distribute the Program (or a work based on it,
+under Section 2) in object code or executable form under the terms of
+Sections 1 and 2 above provided that you also do one of the following:
+
+    a) Accompany it with the complete corresponding machine-readable
+    source code, which must be distributed under the terms of Sections
+    1 and 2 above on a medium customarily used for software interchange; or,
+
+    b) Accompany it with a written offer, valid for at least three
+    years, to give any third party, for a charge no more than your
+    cost of physically performing source distribution, a complete
+    machine-readable copy of the corresponding source code, to be
+    distributed under the terms of Sections 1 and 2 above on a medium
+    customarily used for software interchange; or,
+
+    c) Accompany it with the information you received as to the offer
+    to distribute corresponding source code.  (This alternative is
+    allowed only for noncommercial distribution and only if you
+    received the program in object code or executable form with such
+    an offer, in accord with Subsection b above.)
+
+The source code for a work means the preferred form of the work for
+making modifications to it.  For an executable work, complete source
+code means all the source code for all modules it contains, plus any
+associated interface definition files, plus the scripts used to
+control compilation and installation of the executable.  However, as a
+special exception, the source code distributed need not include
+anything that is normally distributed (in either source or binary
+form) with the major components (compiler, kernel, and so on) of the
+operating system on which the executable runs, unless that component
+itself accompanies the executable.
+
+If distribution of executable or object code is made by offering
+access to copy from a designated place, then offering equivalent
+access to copy the source code from the same place counts as
+distribution of the source code, even though third parties are not
+compelled to copy the source along with the object code.
+
+  4. You may not copy, modify, sublicense, or distribute the Program
+except as expressly provided under this License.  Any attempt
+otherwise to copy, modify, sublicense or distribute the Program is
+void, and will automatically terminate your rights under this License.
+However, parties who have received copies, or rights, from you under
+this License will not have their licenses terminated so long as such
+parties remain in full compliance.
+
+  5. You are not required to accept this License, since you have not
+signed it.  However, nothing else grants you permission to modify or
+distribute the Program or its derivative works.  These actions are
+prohibited by law if you do not accept this License.  Therefore, by
+modifying or distributing the Program (or any work based on the
+Program), you indicate your acceptance of this License to do so, and
+all its terms and conditions for copying, distributing or modifying
+the Program or works based on it.
+
+  6. Each time you redistribute the Program (or any work based on the
+Program), the recipient automatically receives a license from the
+original licensor to copy, distribute or modify the Program subject to
+these terms and conditions.  You may not impose any further
+restrictions on the recipients' exercise of the rights granted herein.
+You are not responsible for enforcing compliance by third parties to
+this License.
+
+  7. If, as a consequence of a court judgment or allegation of patent
+infringement or for any other reason (not limited to patent issues),
+conditions are imposed on you (whether by court order, agreement or
+otherwise) that contradict the conditions of this License, they do not
+excuse you from the conditions of this License.  If you cannot
+distribute so as to satisfy simultaneously your obligations under this
+License and any other pertinent obligations, then as a consequence you
+may not distribute the Program at all.  For example, if a patent
+license would not permit royalty-free redistribution of the Program by
+all those who receive copies directly or indirectly through you, then
+the only way you could satisfy both it and this License would be to
+refrain entirely from distribution of the Program.
+
+If any portion of this section is held invalid or unenforceable under
+any particular circumstance, the balance of the section is intended to
+apply and the section as a whole is intended to apply in other
+circumstances.
+
+It is not the purpose of this section to induce you to infringe any
+patents or other property right claims or to contest validity of any
+such claims; this section has the sole purpose of protecting the
+integrity of the free software distribution system, which is
+implemented by public license practices.  Many people have made
+generous contributions to the wide range of software distributed
+through that system in reliance on consistent application of that
+system; it is up to the author/donor to decide if he or she is willing
+to distribute software through any other system and a licensee cannot
+impose that choice.
+
+This section is intended to make thoroughly clear what is believed to
+be a consequence of the rest of this License.
+
+  8. If the distribution and/or use of the Program is restricted in
+certain countries either by patents or by copyrighted interfaces, the
+original copyright holder who places the Program under this License
+may add an explicit geographical distribution limitation excluding
+those countries, so that distribution is permitted only in or among
+countries not thus excluded.  In such case, this License incorporates
+the limitation as if written in the body of this License.
+
+  9. The Free Software Foundation may publish revised and/or new versions
+of the General Public License from time to time.  Such new versions will
+be similar in spirit to the present version, but may differ in detail to
+address new problems or concerns.
+
+Each version is given a distinguishing version number.  If the Program
+specifies a version number of this License which applies to it and "any
+later version", you have the option of following the terms and conditions
+either of that version or of any later version published by the Free
+Software Foundation.  If the Program does not specify a version number of
+this License, you may choose any version ever published by the Free Software
+Foundation.
+
+  10. If you wish to incorporate parts of the Program into other free
+programs whose distribution conditions are different, write to the author
+to ask for permission.  For software which is copyrighted by the Free
+Software Foundation, write to the Free Software Foundation; we sometimes
+make exceptions for this.  Our decision will be guided by the two goals
+of preserving the free status of all derivatives of our free software and
+of promoting the sharing and reuse of software generally.
+
+			    NO WARRANTY
+
+  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
+OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
+TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
+PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
+REPAIR OR CORRECTION.
+
+  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
+INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
+OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
+TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
+YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
+PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES.
+
+		     END OF TERMS AND CONDITIONS
+
+	    How to Apply These Terms to Your New Programs
+
+  If you develop a new program, and you want it to be of the greatest
+possible use to the public, the best way to achieve this is to make it
+free software which everyone can redistribute and change under these terms.
+
+  To do so, attach the following notices to the program.  It is safest
+to attach them to the start of each source file to most effectively
+convey the exclusion of warranty; and each file should have at least
+the "copyright" line and a pointer to where the full notice is found.
+
+    &lt;one line to give the program's name and a brief idea of what it does.&gt;
+    Copyright (C) &lt;year&gt;  &lt;name of author&gt;
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Also add information on how to contact you by electronic and paper mail.
+
+If the program is interactive, make it output a short notice like this
+when it starts in an interactive mode:
+
+    Gnomovision version 69, Copyright (C) year name of author
+    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; type `show c' for details.
+
+The hypothetical commands `show w' and `show c' should show the appropriate
+parts of the General Public License.  Of course, the commands you use may
+be called something other than `show w' and `show c'; they could even be
+mouse-clicks or menu items-&#45;whatever suits your program.
+
+You should also get your employer (if you work as a programmer) or your
+school, if any, to sign a "copyright disclaimer" for the program, if
+necessary.  Here is a sample; alter the names:
+
+  Yoyodyne, Inc., hereby disclaims all copyright interest in the program
+  `Gnomovision' (which makes passes at compilers) written by James Hacker.
+
+  &lt;signature of Ty Coon&gt;, 1 April 1989
+  Ty Coon, President of Vice
+
+This General Public License does not permit incorporating your program into
+proprietary programs.  If your program is a subroutine library, you may
+consider it more useful to permit linking proprietary applications with the
+library.  If this is what you want to do, use the GNU Library General
+Public License instead of this License.
+</pre>
+<div class="footer">
+<a href="gpl.txt" type="text/plain">Download as text (original file name: <span class="file">gpl.txt</span>).</a>
+</div></div>
+
+<P>
+
+<H1><A NAME="SECTION0001200000000000000000">
+11 Changes</A>
+</H1>
+
+<P>
+<div class="verbatim">
+<pre>0.5.2
+
+- Basic Joins
+  - SQL parser supports multiple tables in SELECT and table names in WHERE clauses
+  - connection.where() modified to act on multiple tables
+- DROP supports multiple tables
+
+0.5.1
+
+- Foreign key constraints
+  - cannot update or insert a value into a child record for a parent which does not exist
+  - cannot drop a parent table until all children are removed, can drop child table
+- DROP supports multiple tables
+
+0.5.0
+
+- Foreign key constraints
+  - cannot delete a parent record if child records still link to it
+
+0.4.3
+
+- Redefined variables fields instead of columns
+- parameter substitution for create
+- values and sqlValues options working for insert, update
+- Document new features: cursor methods, escape characters, parenthesis, like 
+
+0.4.2
+
+- Not using keywords or types as column names
+- Restuctures the SQLParser so output feeds directly into corresponding SQLBuilder functions
+- Integrate SQL Builder into cursor functions
+- sqlValues option for insert, update
+
+0.4.1
+
+- Where clause supporting parentheses
+- LIKE keyword
+- Completed SQLBuilder
+
+0.4.0 
+
+- Re-wrote SQL Parser to return raw SQL
+- Re-wrote conversions to use the raw SQL
+- Wrote basic SQL Builder (not integrated into code yet)
+- distTools supports more formats
+
+0.3.6
+
+- Implemented fetchModes, debug, 
+- Basic web.database cursor functions supported
+- Fixed rollback issues
+- Implemented new test example.
+
+0.3.5
+
+- Re-written to support Python 2.1</pre>
+<div class="footer">
+<a href="CHANGES.txt" type="text/plain">Download as text (original file name: <span class="file">CHANGES.txt</span>).</a>
+</div></div>
+
+<P>
+
+<H1><A NAME="SECTION0001300000000000000000">
+12 Future Plans</A>
+</H1>
+
+<P>
+<div class="verbatim">
+<pre>Check if DBM files can be moved cross platform easily.
+Add a DISTINCT keyword to SELECT
+DELETE * FROM syntax
+DROP Database syntax
+Brackets around WHERE clause statements
+Need to be fussy about is NULL rather than = NULL ?
+Need to write an ORDER BY test
+Need to write a WHERE test
+Need to write an incorrect values test
+Creating tables and then selecting * is producing them in the wrong order.
+Support for BINARY and UNKNOWN fields.
+Change UNIQUE and DEFAULT behaviour
+Check the accepted ranges of Date, Datetime and Time fields</pre>
+<div class="footer">
+<a href="TODO.txt" type="text/plain">Download as text (original file name: <span class="file">TODO.txt</span>).</a>
+</div></div>
+
+<P>
+
+<H1><A NAME="SECTION0001400000000000000000">
+About this document ...</A>
+</H1>
+ <strong>SnakeSQL</strong>,
+19 December 2004
+<p> This document was generated using the tools distributed with Python 2.3</p>
+
+<h2>Comments and Questions</h2>
+
+<p> General comments and questions regarding this document should
+  be sent by email to <a href="mailto:docs@pythonweb.org"
+    >docs@pythonweb.org</a>.  If you find specific errors in
+  this document, either in the content or the presentation, please
+  report the bug by emailing <a href="mailto:bugs@pythonweb.org"
+    >bugs@pythonweb.org</a>.
+</p>
+
+<p> For any of these channels, please be sure not to send HTML email.
+  Thanks.
+</p>
+
+<p>The authour of the web modules can be contacted at <a href="mailto:mail@pythonweb.org">mail@pythonweb.org</a></p>
+
+<DIV CLASS="navigation">
+<p><hr>
+<table align="center" width="100%" cellpadding="0" cellspacing="2">
+<tr>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+<td align="center" width="100%">SnakeSQL</td>
+<td><img src='blank.png'
+  border='0' height='32'  alt='' width='32'></td>
+</tr></table>
+<hr>
+<span class="release-info">Documentation released on 19 December 2004.</span>
+</DIV>
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

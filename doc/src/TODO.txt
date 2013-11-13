@@ -1,0 +1,13 @@
+Check if DBM files can be moved cross platform easily.
+Add a DISTINCT keyword to SELECT
+DELETE * FROM syntax
+DROP Database syntax
+Brackets around WHERE clause statements
+Need to be fussy about is NULL rather than = NULL ?
+Need to write an ORDER BY test
+Need to write a WHERE test
+Need to write an incorrect values test
+Creating tables and then selecting * is producing them in the wrong order.
+Support for BINARY and UNKNOWN fields.
+Change UNIQUE and DEFAULT behaviour
+Check the accepted ranges of Date, Datetime and Time fields
