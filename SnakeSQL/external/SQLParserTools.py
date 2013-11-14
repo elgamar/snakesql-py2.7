@@ -72,7 +72,7 @@ soonToBe = [
 # Ensure list items are all uppercase if set extrenally
 def setTypes(list):
     for i in range(len(list)):
-        list[i] = list[i].upper()
+        list[i] = str(list[i]).upper()
     types = list
 
 # SQLParser

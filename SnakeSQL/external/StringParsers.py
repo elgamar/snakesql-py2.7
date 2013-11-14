@@ -13,33 +13,31 @@ except NameError:
     True = 1
     False = 0
     
-# Define functions
+# Define functions - whitespace retained for API compatibility
 def stripEnd(line, whitespace=' '):
-    if type(line) == type(''):
-        while line and line[-1] == whitespace: 
-            line = line[:-1]
-        return line
+    if isinstance(line, basestring):
+        return line.rstrip()
+    #rstrip() each item in the supplied iterable object
     terms = []
     for term in line:
-        while term and term[-1] == whitespace: 
-            term = term[:-1]
+        term = str(term).rstrip()
         terms.append(term)
     return terms
     
+# Define functions - whitespace retained for API compatibility
 def stripStart(line, whitespace=' '):
-    if type(line) == type(''):
-        while line and line[0] == whitespace: 
-            line = line[1:]
-        return line
+    if isinstance(line, basestring):
+        return line.lstrip()
+    #lstrip() each item in the supplied iterable object
     terms = []
     for term in line:
-        while term and term[0] == whitespace: 
-            term = term[1:]
+        term = str(term).lstrip()
         terms.append(term)
     return terms
 
+# whitespace retained for API compatibility
 def stripBoth(line, whitespace=' '):
-    if type(line) == type(''):
+    if isinstance(line, basestring):
         return stripStart(stripEnd(line, whitespace))
     else:
         terms = []
@@ -47,6 +45,7 @@ def stripBoth(line, whitespace=' '):
             terms.append(stripStart(stripEnd(term, whitespace)))
         return terms
 
+# can't understand what this function is good for: shouldn't a simple string.split() suffice?
 def splitKeepQuotedValues(string, seperater=' ', quote="'"):
     p = string.split(quote)
     params = []
