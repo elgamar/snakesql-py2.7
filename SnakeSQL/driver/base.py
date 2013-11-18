@@ -700,7 +700,7 @@ class BaseConnection:
             typeConverters = []
             sqlConverters = []
             for block in where:
-                if type(block) <> type(''):
+                if not isinstance(block, basestring):
                     if '.' not in block[0]:
                         if not table:
                             raise SQLError('No table specified for column %s in WHERE clause'%repr(block[0]))
@@ -741,7 +741,7 @@ class BaseConnection:
                     try:
                         internalValues.append(sqlConverters[i](value))
                     except ConversionError, e:
-                        if type(value) == type('') and value[0] <> "'":
+                        if isinstance(value, basestring) and value[0] <> "'":
                             res1 = value.split('.')
                         if len(res1) == 1:
                             raise SQLError(str(e))
@@ -754,7 +754,7 @@ class BaseConnection:
                 i+=1
             c = 0
             for i in range(len(where)):
-                if type(where[i]) <> type(''):
+                if not isinstance(where[i], basestring):
                     where[i][2] = internalValues[c]
                     c += 1
             return where, counter
@@ -790,7 +790,7 @@ class BaseConnection:
 
         if self._closed:
             raise Error('The connection to the database has been closed.')
-        if type(tables) == type(''):
+        if isinstance(tables, basestring):
             tables = [tables]
         for table in tables:
             if not self.tables.has_key(table):
@@ -808,7 +808,7 @@ class BaseConnection:
                 #~ for block in where:
                     #~ columns[table] = {}
             #~ for block in where:
-                #~ if type(block) <> type(''):
+                #~ if not isinstance(block, basestring):
                     #~ res = block[0].split('.')
                     #~ if len(res) == 1:
                         #~ t = tables[0]
@@ -854,7 +854,7 @@ found = []
     # ie we need to know the keyPosition of each tables row and the position of each field we want to select against
             for block in where:
                 # Prepare the values
-                if type(block) == type(''):
+                if isinstance(block, basestring):
                     ifStatement += ' '+block+' '
                 else:
                     res = block[0].split('.')
@@ -1001,7 +1001,7 @@ found = []
     def _drop(self, tables):
         if self._closed:
             raise Error('The connection to the database has been closed.')
-        if type(tables) == type(''):
+        if isinstance(tables, basestring):
             tables = [tables]
         for table in tables:
             if not self.tables.has_key(table):
@@ -1203,7 +1203,7 @@ found = []
     def _select(self, columns, tables, where, order, values=[]):
         if self._closed:
             raise Error('The connection to the database has been closed.')
-        if type(tables) == type(''):
+        if isinstance(tables, basestring):
             tables = [tables]
         for table in tables:
             if not self.tables.has_key(table):
@@ -1841,18 +1841,18 @@ class Cursor:
         #    raise NotSupportedError("SnakeSQL doesn't support the DISTINCT keyword.")
         if format == None:
             format = self.format
-        if type(columns) == type(''):
+        if isinstance(columns, basestring):
             columns = [columns]
-        if type(tables) == type(''):
+        if isinstance(tables, basestring):
             tables = [tables]
         if execute == False:
             return self.connection.parser.buildSelect(tables, columns, where, order)
         else:
             # Don't need to worry about convertResult since it is taken care of in fetchRows()
             # Don't need to worry about format since it is taken care of in fetchRows()
-            if type(where) == type(''):
+            if isinstance(where, basestring):
                 where = self.where(where)
-            if type(order) == type(''):
+            if isinstance(order, basestring):
                 order = self.order(order)
             #if columns == ['*']:
             #    columns = self.columns(table)
@@ -1869,7 +1869,7 @@ class Cursor:
             raise SQLError('You must specify either values or sqlValues, they can be []')
         if sqlValues <> None and values <> None:
             raise SQLError('You cannot specify both values and sqlvalues')
-        if type(columns) == type(''):
+        if isinstance(columns, basestring):
             columns = [columns]
         if type(values) not in [type((1,)), type([])]:
             values = [values]
@@ -1900,7 +1900,7 @@ class Cursor:
             raise SQLError('You must specify either values or sqlValues, they can be []')
         if sqlValues <> None and values <> None:
             raise SQLError('You cannot specify both values and sqlvalues')
-        if type(columns) == type(''):
+        if isinstance(columns, basestring):
             columns = [columns]
         if type(values) not in [type((1,)), type([])]:
             values = [values]
@@ -1919,7 +1919,7 @@ class Cursor:
                     sqlValues.append(self.connection.driver['converters'][self.connection.tables[table].get(columns[i]).type.capitalize()].valueToSQL(values[i]))
             return self.connection.parser.buildUpdate(table, columns, sqlValues, where)
         else:
-            if type(where) == type(''):
+            if isinstance(where, basestring):
                 where = self.where(where)
             self.info = self.connection._update(
                 table=table, 
@@ -1933,7 +1933,7 @@ class Cursor:
         if execute == False:
             return self.connection.parser.buildDelete(table, where)
         else:
-            if type(where) == type(''):
+            if isinstance(where, basestring):
                 where = self.where(where)
             self.info = self.connection._delete(
                 table=table, 
@@ -1944,7 +1944,7 @@ class Cursor:
     def create(self, table, columns, execute=None):
         f = []
         for column in columns:
-            if type(column) == type(''):
+            if isinstance(column, basestring):
                 f.append(self.column(column))
             else:
                 f.append(column)        

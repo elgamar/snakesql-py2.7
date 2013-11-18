@@ -21,7 +21,17 @@ def choosePath(inst, directory):
             raw_input('Press ENTER to exit.')
             sys.exit(1)
     return inst
-        
+
+def remove(name):
+  print "Removing %s"%name
+  from distutils import sysconfig
+  inst = sysconfig.get_python_lib()
+  instdir = inst+os.sep+name
+  if os.path.exists(inst) and os.path.exists(instdir):
+    if raw_input("Are you sure you want to remove '%(x)s' from '%(y)s'? [y/N]: " %{'x' : name, 'y' : instdir} ) == 'y':
+      print "Removing %s recursively..."%instdir
+      shutil.rmtree(instdir, True)
+
 def install(directory, name):
     print "Installing %s"%name
     from distutils import sysconfig
