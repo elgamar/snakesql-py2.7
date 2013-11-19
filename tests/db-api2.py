@@ -138,12 +138,13 @@ def conversionTest():
         print "Time failed."
     if SnakeSQL.Timestamp(2004,12,12,12,12,12) <> datetime.datetime(2004,12,12,12,12,12):
         print "Timestamp failed."
-    if SnakeSQL.DateFromTicks(time.time()) <> datetime.date(2004,12,12).now():
+    if SnakeSQL.DateFromTicks(time.time()) <> datetime.date.today():
         print "DateFromTicks failed."
-    if SnakeSQL.TimeFromTicks(time.time()) <> datetime.time(12,12,12).now():
-        print "TimeFromTicks failed."
-    if SnakeSQL.TimestampFromTicks(time.time()) <> datetime.datetime(2004,12,12,12,12,12).now():
-        print "TimestampFromTicks failed."
+    #TODO: define a way to test TimeFromTicks and TimestampFromTicks, because there's no trace of now() in modern Python
+    #if SnakeSQL.TimeFromTicks(time.time()) <> datetime.time(12,12,12).now():
+    #    print "TimeFromTicks failed."
+    #if SnakeSQL.TimestampFromTicks(time.time()) <> datetime.datetime(2004,12,12,12,12,12).now():
+    #    print "TimestampFromTicks failed."
     if SnakeSQL.Binary('hello') <> 'hello':
         print "Binary failed."
         
